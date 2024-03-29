@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from utils.line_utils import line_intersection
 
 
 class CourtDetection:
@@ -13,6 +14,7 @@ class CourtDetection:
         self.frame_height = 0
         self.highest_vertical_line_y = np.inf
         self.lowest_vertical_line_y = 0
+        self.line_merge_threshold = 10
 
     def detect_court(self, img_frame):
         self.original_frame = img_frame
@@ -68,13 +70,21 @@ class CourtDetection:
         lines = np.squeeze(lines)
 
         if self.verbose:
-            self._draw_lines_from_vertical_and_horizontal(self.original_frame.copy(), [], lines, [])
+            self._draw_lines_from_vertical_and_horizontal(self.original_frame.copy(), 'line-detection', [], lines, [])
 
         # 2.2: Selected lines classification
         horizontal, vertical_left, vertical_right = self._classify_and_sort_lines(lines)
 
         if self.verbose:
-            self._draw_lines_from_vertical_and_horizontal(self.original_frame.copy(), horizontal, vertical_left,
+            self._draw_lines_from_vertical_and_horizontal(self.original_frame.copy(), 'line-classification', horizontal,
+                                                          vertical_left,
+                                                          vertical_right)
+        # 2.3: Line merging
+        horizontal, vertical_left, vertical_right = self._merge_lines(horizontal, vertical_left, vertical_right)
+
+        if self.verbose:
+            self._draw_lines_from_vertical_and_horizontal(self.original_frame.copy(), 'line-merging', horizontal,
+                                                          vertical_left,
                                                           vertical_right)
 
     def _classify_and_sort_lines(self, lines):
@@ -106,7 +116,7 @@ class CourtDetection:
         h = self.lowest_vertical_line_y - self.highest_vertical_line_y
         self.lowest_vertical_line_y += h / 15
         self.highest_vertical_line_y -= h * 2 / 15
-        
+
         for line in horizontal_lines:
             x1, y1, x2, y2 = line
             if (self.lowest_vertical_line_y > y1 > self.highest_vertical_line_y
@@ -130,7 +140,8 @@ class CourtDetection:
 
         return vertical_left, vertical_right
 
-    def _merge_lines(self, horizontal_lines, vertical_lines):
+    def _merge_lines(self, horizontal_lines, vertical_left_lines, vertical_right_lines):
+        # Merge horizontal lines
         mask = [True] * len(horizontal_lines)
         new_horizontal_lines = []
         for i, line in enumerate(horizontal_lines):
@@ -140,20 +151,20 @@ class CourtDetection:
                         x1, y1, x2, y2 = line
                         x3, y3, x4, y4 = s_line
                         dy = abs(y3 - y2)
-                        if dy < 10:
+                        if dy < self.line_merge_threshold:
                             points = sorted([(x1, y1), (x2, y2), (x3, y3), (x4, y4)], key=lambda x: x[0])
                             line = np.array([*points[0], *points[-1]])
                             mask[i + j + 1] = False
                 new_horizontal_lines.append(line)
 
         # Merge vertical lines
-        vertical_lines = sorted(vertical_lines, key=lambda item: item[1])
-        xl, yl, xr, yr = (0, self.v_height * 6 / 7, self.v_width, self.v_height * 6 / 7)
-        mask = [True] * len(vertical_lines)
-        new_vertical_lines = []
-        for i, line in enumerate(vertical_lines):
+        xl, yl, xr, yr = (0, self.frame_height * 6 / 7, self.frame_width, self.frame_height * 6 / 7)
+
+        mask = [True] * len(vertical_left_lines)
+        new_vertical_left_lines = []
+        for i, line in enumerate(vertical_left_lines):
             if mask[i]:
-                for j, s_line in enumerate(vertical_lines[i + 1:]):
+                for j, s_line in enumerate(vertical_left_lines[i + 1:]):
                     if mask[i + j + 1]:
                         x1, y1, x2, y2 = line
                         x3, y3, x4, y4 = s_line
@@ -161,15 +172,36 @@ class CourtDetection:
                         xj, yj = line_intersection(((x3, y3), (x4, y4)), ((xl, yl), (xr, yr)))
 
                         dx = abs(xi - xj)
-                        if dx < 10:
+                        if dx < self.line_merge_threshold:
                             points = sorted([(x1, y1), (x2, y2), (x3, y3), (x4, y4)], key=lambda x: x[1])
                             line = np.array([*points[0], *points[-1]])
                             mask[i + j + 1] = False
 
-                new_vertical_lines.append(line)
-        return new_horizontal_lines, new_vertical_lines
+                new_vertical_left_lines.append(line)
 
-    def _draw_lines_from_vertical_and_horizontal(self, img_frame, horizontal=(), vertical_left=(), vertical_right=()):
+        mask = [True] * len(vertical_right_lines)
+        new_vertical_right_lines = []
+        for i, line in enumerate(vertical_right_lines):
+            if mask[i]:
+                for j, s_line in enumerate(vertical_right_lines[i + 1:]):
+                    if mask[i + j + 1]:
+                        x1, y1, x2, y2 = line
+                        x3, y3, x4, y4 = s_line
+                        xi, yi = line_intersection(((x1, y1), (x2, y2)), ((xl, yl), (xr, yr)))
+                        xj, yj = line_intersection(((x3, y3), (x4, y4)), ((xl, yl), (xr, yr)))
+
+                        dx = abs(xi - xj)
+                        if dx < self.line_merge_threshold:
+                            points = sorted([(x1, y1), (x2, y2), (x3, y3), (x4, y4)], key=lambda x: x[1])
+                            line = np.array([*points[0], *points[-1]])
+                            mask[i + j + 1] = False
+
+                new_vertical_right_lines.append(line)
+
+        return new_horizontal_lines, new_vertical_left_lines, new_vertical_right_lines
+
+    def _draw_lines_from_vertical_and_horizontal(self, img_frame, name, horizontal=(), vertical_left=(),
+                                                 vertical_right=()):
         for line in horizontal:
             x1, y1, x2, y2 = line
             cv2.line(img_frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
@@ -188,7 +220,7 @@ class CourtDetection:
             cv2.circle(img_frame, (x1, y1), 1, (255, 0, 0), 2)
             cv2.circle(img_frame, (x2, y2), 1, (255, 0, 0), 2)
 
-        cv2.imshow('court', img_frame)
+        cv2.imshow(name, img_frame)
         if cv2.waitKey(0) & 0xff == 27:
             cv2.destroyAllWindows()
 
