@@ -23,11 +23,6 @@ class CourtDetection:
         # Step 1: Extract court pixels
         new_img_frame = self._extract_court_pixels(img_frame)
 
-        if self.verbose:
-            cv2.imshow('court', new_img_frame)
-            if cv2.waitKey(0) & 0xff == 27:
-                cv2.destroyAllWindows()
-
         # Step 2: Detect Court Lines
         self._detect_court_lines(new_img_frame)
 
@@ -36,6 +31,11 @@ class CourtDetection:
     def _extract_court_pixels(self, img_frame):
         color_threshold_frame = self._threshold_white_pixels(img_frame)
         belongs_to_line_frame = self._filter_belongs_to_line(color_threshold_frame)
+
+        if self.verbose:
+            cv2.imshow('extract-court-pixels', belongs_to_line_frame)
+            if cv2.waitKey(0) & 0xff == 27:
+                cv2.destroyAllWindows()
 
         return belongs_to_line_frame
 
@@ -237,3 +237,5 @@ if __name__ == '__main__':
 
     court_detection = CourtDetection(verbose=True)
     court_detection.detect_court(img)
+
+    print(f'Elapsed time: {time.time() - start_time}')
