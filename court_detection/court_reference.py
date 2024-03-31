@@ -79,6 +79,16 @@ class CourtReference:
                 court_ref = cv2.circle(court_ref, p, 15, (0, 0, 255), 30)
             cv2.imwrite(f'configs/court_conf_{i}.png', court_ref)
 
+    def get_extra_parts(self):
+        parts = [self.top_extra_part, self.bottom_extra_part]
+        return parts
+
+    def get_important_lines(self):
+        lines = [*self.baseline_top, *self.baseline_bottom, *self.net, *self.left_court_line, *self.right_court_line,
+                 *self.left_inner_line, *self.right_inner_line, *self.middle_line,
+                 *self.top_inner_line, *self.bottom_inner_line]
+        return lines
+
 
 if __name__ == '__main__':
     c = CourtReference()
