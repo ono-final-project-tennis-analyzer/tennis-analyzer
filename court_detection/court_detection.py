@@ -348,8 +348,20 @@ class CourtDetection:
         self.top_inner_line = lines[32:36]
         self.bottom_inner_line = lines[36:40]
 
+        print(f'Baseline top: {self.baseline_top}')
+        print(f'Baseline bottom: {self.baseline_bottom}')
+        print(f'Net: {self.net}')
+        print(f'Left court line: {self.left_court_line}')
+        print(f'Right court line: {self.right_court_line}')
+        print(f'Left inner line: {self.left_inner_line}')
+        print(f'Right inner line: {self.right_inner_line}')
+        print(f'Middle line: {self.middle_line}')
+        print(f'Top inner line: {self.top_inner_line}')
+        print(f'Bottom inner line: {self.bottom_inner_line}')
+
         if self.verbose:
             self._draw_lines_from_vertical_and_horizontal(self.original_frame.copy(),
+                                                          "important-lines",
                                                           [self.baseline_top, self.baseline_bottom,
                                                            self.net, self.top_inner_line,
                                                            self.bottom_inner_line],
@@ -360,19 +372,35 @@ class CourtDetection:
     def _draw_lines_from_vertical_and_horizontal(self, img_frame, name, horizontal=(), vertical_left=(),
                                                  vertical_right=()):
         for line in horizontal:
+            print(line)
             x1, y1, x2, y2 = line
+            x1 = int(x1)
+            y1 = int(y1)
+            x2 = int(x2)
+            y2 = int(y2)
+
             cv2.line(img_frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
             cv2.circle(img_frame, (x1, y1), 1, (255, 0, 0), 2)
             cv2.circle(img_frame, (x2, y2), 1, (255, 0, 0), 2)
 
         for line in vertical_left:
             x1, y1, x2, y2 = line
+            x1 = int(x1)
+            y1 = int(y1)
+            x2 = int(x2)
+            y2 = int(y2)
+
             cv2.line(img_frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
             cv2.circle(img_frame, (x1, y1), 1, (255, 0, 0), 2)
             cv2.circle(img_frame, (x2, y2), 1, (255, 0, 0), 2)
 
         for line in vertical_right:
             x1, y1, x2, y2 = line
+            x1 = int(x1)
+            y1 = int(y1)
+            x2 = int(x2)
+            y2 = int(y2)
+
             cv2.line(img_frame, (x1, y1), (x2, y2), (255, 255, 0), 2)
             cv2.circle(img_frame, (x1, y1), 1, (255, 0, 0), 2)
             cv2.circle(img_frame, (x2, y2), 1, (255, 0, 0), 2)
@@ -404,7 +432,7 @@ if __name__ == '__main__':
 
     start_time = time.time()
 
-    clay_court_detection = CourtDetection(verbose=False)
+    clay_court_detection = CourtDetection(verbose=True)
     clay_court_detection.detect_court(clay_img)
 
     cv2.imshow('test_clay', clay_court_detection.add_court_overlay(clay_img.copy(), overlay_color=(255, 0, 0)))
