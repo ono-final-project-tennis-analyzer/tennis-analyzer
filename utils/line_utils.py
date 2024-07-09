@@ -19,6 +19,7 @@ def sort_intersection_points(intersections):
     y_sorted = sorted(intersections, key=lambda x: x[1])
     p12 = y_sorted[:2]
     p34 = y_sorted[2:]
+    
     p12 = sorted(p12, key=lambda x: x[0])
     p34 = sorted(p34, key=lambda x: x[0])
     return p12 + p34

@@ -6,7 +6,7 @@ from court_reference import CourtReference
 from matplotlib import pyplot as plt
 
 
-class CourtDetection:
+class CourtDetectionComputerVision:
     def __init__(self, verbose: bool):
         self.verbose = verbose
         self.color_threshold = 200
@@ -432,21 +432,21 @@ if __name__ == '__main__':
 
     start_time = time.time()
 
-    clay_court_detection = CourtDetection(verbose=True)
+    clay_court_detection = CourtDetectionComputerVision(verbose=False)
     clay_court_detection.detect_court(clay_img)
 
     cv2.imshow('test_clay', clay_court_detection.add_court_overlay(clay_img.copy(), overlay_color=(255, 0, 0)))
     if cv2.waitKey(0):
         cv2.destroyAllWindows()
 
-    hard_court_detection = CourtDetection(verbose=False)
+    hard_court_detection = CourtDetectionComputerVision(verbose=False)
     hard_court_detection.detect_court(hard_img)
 
     cv2.imshow('test_hard', hard_court_detection.add_court_overlay(hard_img.copy(), overlay_color=(255, 0, 0)))
     if cv2.waitKey(0):
         cv2.destroyAllWindows()
 
-    grass_court_detection = CourtDetection(verbose=False)
+    grass_court_detection = CourtDetectionComputerVision(verbose=False)
     grass_court_detection.detect_court(grass_img)
 
     cv2.imshow('test_grass', grass_court_detection.add_court_overlay(grass_img.copy(), overlay_color=(255, 0, 0)))
