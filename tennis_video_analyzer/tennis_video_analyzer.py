@@ -55,7 +55,7 @@ def process_video(video_path, output_path):
                 print(f'Error adding court overlay on frame {frame_counter}: {e}')
                 need_court_detection = True
 
-        # Add ball location (if any processing is needed)
+        # Add ball tracking overlay
 
         # Write the frame to the output video
         out_video.write(clone_frame)
