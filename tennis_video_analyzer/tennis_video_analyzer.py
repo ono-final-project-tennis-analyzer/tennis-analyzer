@@ -1,8 +1,8 @@
 import argparse
 import cv2
 import time
-import os
 
+from ball_detector import BallDetector
 from court_detector.court_detection_computer_vision import CourtDetectorComputerVision
 from utils.video_utils import get_video_properties
 
@@ -82,3 +82,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     process_video(args.video_path, args.video_out_path)
+
+    BallDetector(model_path="../ball_detector/exps/default/model_best.pt",
+                 video_path=args.video_out_path,
+                 video_out_path="video/final.output.mp4").to_video()

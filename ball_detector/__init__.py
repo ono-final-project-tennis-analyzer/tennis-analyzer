@@ -1,0 +1,1 @@
+from ball_detector.infer_on_video import BallDetector
