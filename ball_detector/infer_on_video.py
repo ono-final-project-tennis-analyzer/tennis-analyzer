@@ -165,7 +165,7 @@ def write_track(frames, ball_track, path_output_video, fps, trace=7):
 
 
 class BallDetector:
-    def __init__(self, model_path: str = "exps/default/model_best.pt",
+    def __init__(self, model_path: str = "exps/default/tracknet-weights.pt",
                  video_path="video/test.mp4",
                  video_out_path="video/test.output.mp4",
                  extrapolation=None, batch_size: int = 2, ):
@@ -204,7 +204,7 @@ class BallDetector:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--batch_size', type=int, default=2, help='batch size')
-    parser.add_argument('--model_path', type=str, help='path to model', default="exps/default/model_best.pt")
+    parser.add_argument('--model_path', type=str, help='path to model', default="exps/default/tracknet-weights.pt")
     parser.add_argument('--video_path', type=str, help='path to input video', default="video/test.mp4")
     parser.add_argument('--video_out_path', type=str, help='path to output video', default="video/test.output.mp4")
     parser.add_argument('--extrapolation', action='store_true', help='whether to use ball track extrapolation')

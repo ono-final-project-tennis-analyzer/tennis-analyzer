@@ -53,7 +53,7 @@ if __name__ == '__main__':
         os.makedirs(tb_path)
     log_writer = SummaryWriter(tb_path)
     model_last_path = os.path.join(exps_path, 'model_last.pt')
-    model_best_path = os.path.join(exps_path, 'model_best.pt')
+    model_best_path = os.path.join(exps_path, 'tracknet-weights.pt')
 
     optimizer = optim.Adadelta(model.parameters(), lr=args.lr)
     val_best_metric = 0

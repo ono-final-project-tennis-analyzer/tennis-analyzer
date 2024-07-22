@@ -20,6 +20,11 @@ class CourtReference:
         self.top_extra_part = (832.5, 580)
         self.bottom_extra_part = (832.5, 2910)
 
+        self.key_points = [*self.baseline_top, *self.baseline_bottom,
+                           *self.left_inner_line, *self.right_inner_line,
+                           *self.top_inner_line, *self.bottom_inner_line,
+                           *self.middle_line]
+
         self.court_conf = {1: [*self.baseline_top, *self.baseline_bottom],
                            2: [self.left_inner_line[0], self.right_inner_line[0], self.left_inner_line[1],
                                self.right_inner_line[1]],
@@ -92,6 +97,20 @@ class CourtReference:
                  *self.left_inner_line, *self.right_inner_line, *self.middle_line,
                  *self.top_inner_line, *self.bottom_inner_line]
         return lines
+
+    def get_court_mask(self, mask_type=0):
+        mask = np.ones_like(self.court)
+        if mask_type == 1:  # Bottom half court
+            # mask[:self.net[0][1] - 1000, :] = 0
+            mask[:self.net[0][1], :] = 0
+        elif mask_type == 2:  # Top half court
+            mask[self.net[0][1]:, :] = 0
+        elif mask_type == 3:  # court without margins
+            mask[:self.baseline_top[0][1], :] = 0
+            mask[self.baseline_bottom[0][1]:, :] = 0
+            mask[:, :self.left_court_line[0][0]] = 0
+            mask[:, self.right_court_line[0][0]:] = 0
+        return mask
 
 
 if __name__ == '__main__':
