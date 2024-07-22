@@ -3,7 +3,7 @@ import cv2
 import time
 import torch
 
-from ball_detector_new.ball_tracker import BallTracker
+from ball_detector.ball_tracker import BallTracker
 from court_detector.court_detection_computer_vision import CourtDetectorComputerVision
 from player_detector.player_detection import PlayerDetector
 from utils.video_utils import get_video_properties
