@@ -7,11 +7,12 @@ from ball_detector.ball_tracker import BallTracker
 from court_detector.court_detection_computer_vision import CourtDetectorComputerVision
 from player_detector.player_detection import PlayerDetector
 from utils.video_utils import get_video_properties
+from video_analyzer_progress_tracker import VideoAnalyzerProgressTracker
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 
-def process_video(video_path, output_path):
+def process_video(video_path, output_path, event_id=0, draw_ball_trace=False, ball_trace_length=7):
     court_detector = CourtDetectorComputerVision(verbose=False)
     player_detector = PlayerDetector(device)
     ball_tracker = BallTracker(device)
@@ -24,10 +25,9 @@ def process_video(video_path, output_path):
     out_video = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
 
     frame_counter = 0
-    total_time = 0
     need_court_detection = True
-    draw_trace = False
-    trace_ball = 7
+
+    progress_tracker = VideoAnalyzerProgressTracker(length, event_id)
 
     ball_track = ball_tracker.infer_model(video)
 
@@ -45,7 +45,6 @@ def process_video(video_path, output_path):
                 court_detector.detect_court(frame)
                 print(f'Court detection {"Success" if court_detector.success_flag else "Failed"}')
                 print(f'Time to detect court :  {time.time() - start_time} seconds')
-                start_time = time.time()
                 need_court_detection = False
             except Exception as e:
                 print(f'Court detection failed for frame {frame_counter} with error: {e}')
@@ -53,10 +52,10 @@ def process_video(video_path, output_path):
 
         clone_frame = frame.copy()
 
-        # Add court overlay
         if court_detector.success_flag:
             court_detector.track_court(frame)
 
+            # Add court overlay
             try:
                 clone_frame = court_detector.add_court_overlay(clone_frame, overlay_color=(0, 0, 255),
                                                                frame_num=frame_counter)
@@ -76,8 +75,8 @@ def process_video(video_path, output_path):
             # detect ball
             try:
                 if ball_track[frame_counter][0]:
-                    if draw_trace:
-                        for j in range(0, trace_ball):
+                    if draw_ball_trace:
+                        for j in range(0, ball_trace_length):
                             if frame_counter - j >= 0:
                                 if ball_track[frame_counter - j][0]:
                                     draw_x = int(ball_track[frame_counter - j][0])
@@ -102,17 +101,10 @@ def process_video(video_path, output_path):
         # Write the frame to the output video
         out_video.write(clone_frame)
 
-        total_time += (time.time() - start_time)
-        if total_time > 0:
-            print('Processing frame %d/%d  FPS %04f' % (frame_counter, length, frame_counter / total_time), '\r',
-                  end='')
+        # Update progress
+        progress_tracker.update_progress(frame_counter)
 
-        if not frame_counter % 100:
-            print('')
-
-    if total_time > 0:
-        print('Processing frame %d/%d  FPS %04f' % (length, length, length / total_time), '\n', end='')
-
+    progress_tracker.update_progress(length)
     print('Processing completed')
     print(f'New video created, file name - {output_path}')
 
@@ -127,4 +119,4 @@ if __name__ == '__main__':
     parser.add_argument('--video_out_path', type=str, help='path to output video', default="video/test.output.mp4")
     args = parser.parse_args()
 
-    process_video(args.video_path, args.video_out_path)
+    process_video(args.video_path, args.video_out_path, event_id=1)
