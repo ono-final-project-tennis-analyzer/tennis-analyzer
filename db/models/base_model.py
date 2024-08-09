@@ -1,10 +1,13 @@
 from datetime import datetime
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime
+from sqlalchemy import create_engine, Column, DateTime
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
+import config
 
 # Base model setup
 Base = declarative_base()
+
+DATABASE_URL = f"postgresql://{config.POSTGRES_USER}:{config.POSTGRES_PASSWORD}@{config.POSTGRES_HOST}:{config.POSTGRES_PORT}/{config.POSTGRES_DB}"
 
 
 class BaseModel(Base):
@@ -14,6 +17,16 @@ class BaseModel(Base):
 
 
 def create_session():
-    engine = create_engine("sqlite:///./test.db")
+    from db.models.events_model import Events
+
+    engine = create_engine(DATABASE_URL)
     Base.metadata.create_all(bind=engine)
-    return sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    return Session(bind=engine)
+
+def with_session():
+    from db.models.events_model import Events
+
+    engine = create_engine(DATABASE_URL)
+    Base.metadata.create_all(bind=engine)
+    Session = sessionmaker(engine)
+    return Session()
