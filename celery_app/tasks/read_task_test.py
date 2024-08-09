@@ -6,9 +6,15 @@ from db.stores import EventStore
 
 @app.task()
 def read_task_test():
+    print("Read Task Test: started")
+
     with with_session() as session:
+        print(f"Read Task Test: session: {session}")
+
         task_queue = TaskQueue()
         task = task_queue.get_next_task()
+
+        print(f"Read task from redis: {task=}")
 
         if task:
             print(f"TASK_QUEUE: read task {task.__dict__}")
@@ -17,3 +23,5 @@ def read_task_test():
             event = store.create_event(task.name, task.meta['account_id'])
 
             print(f"Create event: {event.id}")
+        else:
+            print("No task found")

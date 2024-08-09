@@ -10,6 +10,3 @@ cd celery_app
 
 # Start the Celery worker
 celery -A celery_config worker --loglevel=info &
-
-# Start the Celery beat
-celery -A celery_config beat --loglevel=info &

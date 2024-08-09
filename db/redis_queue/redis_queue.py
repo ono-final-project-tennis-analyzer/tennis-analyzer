@@ -20,7 +20,7 @@ class RedisQueue:
     def queue(self, item):
         self._db.rpush(self._key, item)
 
-    def dequeue(self, block=True, timeout=None):
+    def dequeue(self, block=True, timeout=10):
         if block:
             item = self._db.blpop(self._key, timeout=timeout)
         else:
