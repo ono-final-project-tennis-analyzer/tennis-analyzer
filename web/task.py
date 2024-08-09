@@ -32,8 +32,14 @@ def create_task():
 @task_bp.route('/<id>', methods=['GET'])
 def get_task(id: int):
     # For now, just pass as requested
-    store = EventStore(session=create_session())
+    with create_session() as session:
+        store = EventStore(session=session)
 
-    event = store.get_event(int(id))
+        try:
+            event = store.get_event(int(id))
 
-    return jsonify(event), 200
+            return jsonify(event), 200
+        except EventStore as e:
+            print(e)
+            return 400
+

@@ -6,8 +6,8 @@ class EventStore:
     def __init__(self, session: Session):
         self._session = session
 
-    def create_event(self, name: str, account_id: str):
-        new_event = Events(name=name, stage="started", progress=0.0, account_id=account_id)
+    def create_event(self, name: str, account_id: str, meta: dict):
+        new_event = Events(name=name, stage="started", progress=0.0, account_id=account_id, meta=meta)
         self._session.add(new_event)
         self._session.commit()
         return new_event

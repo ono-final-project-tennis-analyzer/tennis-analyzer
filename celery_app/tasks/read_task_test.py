@@ -20,7 +20,7 @@ def read_task_test():
             print(f"TASK_QUEUE: read task {task.__dict__}")
 
             store = EventStore(session)
-            event = store.create_event(task.name, task.meta['account_id'])
+            event = store.create_event(task.name, task.meta['account_id'], task.meta)
 
             print(f"Create event: {event.id}")
         else:
