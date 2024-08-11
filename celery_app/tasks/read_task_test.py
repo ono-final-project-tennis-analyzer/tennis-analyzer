@@ -2,6 +2,7 @@ from celery_app.celery_config import app
 from celery_app.task_queue import TaskQueue
 from db.models import with_session
 from db.stores import EventStore
+from tennis_video_analyzer.tennis_video_analyzer import process_video
 
 
 @app.task()
@@ -23,5 +24,7 @@ def read_task_test():
             event = store.create_event(task.name, task.meta['account_id'], task.meta)
 
             print(f"Create event: {event.id}")
+
+            process_video(event_id=event.id)
         else:
             print("No task found")

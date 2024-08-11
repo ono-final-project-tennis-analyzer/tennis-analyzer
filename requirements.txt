@@ -27,3 +27,4 @@ sqlalchemy
 celery
 redis
 psycopg2-binary
+minio

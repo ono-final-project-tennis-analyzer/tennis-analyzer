@@ -29,7 +29,7 @@ def process_video(event_id=0, video_path=None, output_path=None, draw_ball_trace
         court_detector = CourtDetectorComputerVision(verbose=False)
         player_detector = PlayerDetector(device)
         ball_tracker = BallTracker(device)
-        
+
         if not video_path:
             video_path = download_video_to_process(event_id, session)
 
@@ -130,11 +130,11 @@ def process_video(event_id=0, video_path=None, output_path=None, draw_ball_trace
         out_video.release()
         cv2.destroyAllWindows()
 
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--video_path', type=str, help='path to input video', default="video/test_short.mp4")
-    parser.add_argument('--video_out_path', type=str, help='path to output video', default="video/test.output.mp4")
-    args = parser.parse_args()
-
-    process_video(event_id=1)
+#
+# if __name__ == '__main__':
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument('--video_path', type=str, help='path to input video', default="video/test_short.mp4")
+#     parser.add_argument('--video_out_path', type=str, help='path to output video', default="video/test.output.mp4")
+#     args = parser.parse_args()
+#
+#     process_video(event_id=1)
