@@ -1,0 +1,5 @@
+venv
+minio-data
+redis-data
+mongo-data
+postgres-data
