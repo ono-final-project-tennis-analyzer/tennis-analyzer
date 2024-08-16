@@ -9,31 +9,43 @@ from tennis_video_analyzer.tennis_video_analyzer import process_video
 def read_task_test():
     print("Read Task Test: started")
 
-    with with_session() as session:
-        print(f"Read Task Test: session: {session}")
+    task_queue = TaskQueue()
 
-        # task_queue = TaskQueue()
-        # task = task_queue.get_next_task()
+    lock_name = "read_task_test_lock"
+    lock = task_queue.lock(lock_name)
 
-        task = TaskItem(
-            name="read_task_test",
-            type="event",
-            meta={
-                "account_id": "1",
-                "fileName": "test_short.mp4",
-            }
-        )
+    if not lock:
+        print("Task is already being processed by another worker. Exiting...")
+        return
 
-        print(f"Read task from redis: {task=}")
+    try:
+        with with_session() as session:
+            print(f"Read Task Test: session: {session}")
 
-        if task:
-            print(f"TASK_QUEUE: read task {task.__dict__}")
+            # task_queue = TaskQueue()
+            # task = task_queue.get_next_task()
 
-            store = EventStore(session)
-            event = store.create_event(task.name, task.meta['account_id'], task.meta)
+            task = TaskItem(
+                name="read_task_test",
+                type="event",
+                meta={
+                    "account_id": "1",
+                    "fileName": "test_short.mp4",
+                }
+            )
 
-            print(f"Create event: {event.id}")
+            print(f"Read task from redis: {task=}")
 
-            process_video(event_id=event.id)
-        else:
-            print("No task found")
+            if task:
+                print(f"TASK_QUEUE: read task {task.__dict__}")
+
+                store = EventStore(session)
+                event = store.create_event(task.name, task.meta['account_id'], task.meta)
+
+                print(f"Create event: {event.id}")
+
+                process_video(event_id=event.id)
+            else:
+                print("No task found")
+    finally:
+        task_queue.unlock(lock)
