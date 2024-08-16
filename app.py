@@ -2,7 +2,7 @@ from flask import Flask
 from web.health import health_bp
 from web.task import task_bp
 from web.file import file_bp
-from db.views import account_views, video_views
+from db.views import account_bp, video_bp
 
 app = Flask(__name__)
 app.secret_key = config.APP_SECRET_KEY
@@ -24,8 +24,8 @@ def unauthorized():
 app.register_blueprint(health_bp, url_prefix='/health')
 app.register_blueprint(task_bp, url_prefix='/task')
 app.register_blueprint(file_bp, url_prefix='/file')
-app.register_blueprint(account_blueprint, url_prefix='/accounts')
-app.register_blueprint(video_blueprint, url_prefix='/videos')
+app.register_blueprint(account_bp, url_prefix='/accounts')
+app.register_blueprint(video_bp, url_prefix='/videos')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8081)
