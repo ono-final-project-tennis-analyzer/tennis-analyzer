@@ -5,6 +5,7 @@ source ./venv/bin/activate
 
 # Set PYTHONPATH to the parent directory to ensure the celery module is found
 export PYTHONPATH=$(pwd)
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
 cd celery_app
 

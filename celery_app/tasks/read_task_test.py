@@ -1,5 +1,5 @@
 from celery_app.celery_config import app
-from celery_app.task_queue import TaskQueue
+from celery_app.task_queue import TaskQueue, TaskItem
 from db.models import with_session
 from db.stores import EventStore
 from tennis_video_analyzer.tennis_video_analyzer import process_video
@@ -12,8 +12,17 @@ def read_task_test():
     with with_session() as session:
         print(f"Read Task Test: session: {session}")
 
-        task_queue = TaskQueue()
-        task = task_queue.get_next_task()
+        # task_queue = TaskQueue()
+        # task = task_queue.get_next_task()
+
+        task = TaskItem(
+            name="read_task_test",
+            type="event",
+            meta= {
+                "account_id": 1,
+                "file_name": "1/test.mp4",
+            }
+        )
 
         print(f"Read task from redis: {task=}")
 
