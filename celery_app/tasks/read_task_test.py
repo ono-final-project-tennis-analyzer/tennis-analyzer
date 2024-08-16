@@ -18,9 +18,9 @@ def read_task_test():
         task = TaskItem(
             name="read_task_test",
             type="event",
-            meta= {
-                "account_id": 1,
-                "file_name": "1/test.mp4",
+            meta={
+                "account_id": "1",
+                "fileName": "test_short.mp4",
             }
         )
 

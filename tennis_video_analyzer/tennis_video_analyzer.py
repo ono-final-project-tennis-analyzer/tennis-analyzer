@@ -9,7 +9,11 @@ from db.stores import EventStore
 from player_detector.player_detection import PlayerDetector
 from storage_client import StorageClient
 from utils.video_utils import get_video_properties
-from tennis_video_analyzer.video_analyzer_progress_tracker import VideoAnalyzerProgressTracker
+
+try:
+    from video_analyzer_progress_tracker import VideoAnalyzerProgressTracker
+except Exception as e:
+    from tennis_video_analyzer.video_analyzer_progress_tracker import VideoAnalyzerProgressTracker
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -19,11 +23,14 @@ def download_video_to_process(event_id, session):
     storage_client = StorageClient()
     event = event_store.get_event(event_id)
 
-    storage_client.download_file(event['account_id'], event['meta.fileName'], 'video/input.mp4')
+    print(f'Downloading video for event {event_id}, file name - {event.meta["fileName"]}')
+
+    storage_client.download_file(event.account_id, event.meta['fileName'], './video/input.mp4')
     return 'video/input.mp4'
 
 
-def process_video(event_id=0, video_path=None, output_path=None, draw_ball_trace=False, ball_trace_length=7):
+def process_video(event_id=0, video_path=None, output_path="video/test.output.mp4", draw_ball_trace=False,
+                  ball_trace_length=7):
     with with_session() as session:
 
         court_detector = CourtDetectorComputerVision(verbose=False)
@@ -130,11 +137,17 @@ def process_video(event_id=0, video_path=None, output_path=None, draw_ball_trace
         out_video.release()
         cv2.destroyAllWindows()
 
-#
 # if __name__ == '__main__':
 #     parser = argparse.ArgumentParser()
 #     parser.add_argument('--video_path', type=str, help='path to input video', default="video/test_short.mp4")
 #     parser.add_argument('--video_out_path', type=str, help='path to output video', default="video/test.output.mp4")
 #     args = parser.parse_args()
 #
-#     process_video(event_id=1)
+#     with with_session() as session:
+#         store = EventStore(session)
+#         event = store.create_event("read_task_test", "1", {
+#             "account_id": "1",
+#             "fileName": "test_short.mp4",
+#         })
+#
+#         download_video_to_process(event.id, session)
