@@ -28,3 +28,5 @@ celery
 redis
 psycopg2-binary
 minio
+flask-login
+flask-cors

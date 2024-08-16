@@ -11,6 +11,10 @@ else:
 MONGODB_URI = os.getenv("MONGODB_URI")
 DATABASE_NAME = os.getenv("DATABASE_NAME")
 
+
+APP_SECRET_KEY = os.getenv("APP_SECRET_KEY")
+
+
 # MinIO Configuration
 MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT")
 MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY")
