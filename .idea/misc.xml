@@ -4,4 +4,7 @@
     <option name="sdkName" value="Python 3.12 (izer-hardware-websocket-server)" />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (tennis-analyzer)" project-jdk-type="Python SDK" />
+  <component name="PyCharmProfessionalAdvertiser">
+    <option name="shown" value="true" />
+  </component>
 </project>
