@@ -9,7 +9,7 @@ from db.stores import EventStore
 from player_detector.player_detection import PlayerDetector
 from storage_client import StorageClient
 from utils.video_utils import get_video_properties
-from video_analyzer_progress_tracker import VideoAnalyzerProgressTracker
+from tennis_video_analyzer.video_analyzer_progress_tracker import VideoAnalyzerProgressTracker
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 

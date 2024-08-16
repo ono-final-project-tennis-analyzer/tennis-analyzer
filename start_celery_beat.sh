@@ -9,4 +9,4 @@ export PYTHONPATH=$(pwd)
 cd celery_app
 
 # Start the Celery beat
-celery -A celery_config beat --loglevel=info &
+celery -A celery_config beat --loglevel=info  &
