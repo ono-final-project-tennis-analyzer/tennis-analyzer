@@ -29,10 +29,19 @@ def download_video_to_process(event_id, session):
     return 'video/input.mp4'
 
 
+def upload_processed_video(event_id, output_path, session):
+    event_store = EventStore(session=session)
+    storage_client = StorageClient()
+    event = event_store.get_event(event_id)
+
+    print(f'Uploading processed video for event {event_id}, file name - {event.meta["fileName"]}')
+
+    storage_client.upload_file(event.account_id, output_path, 'output-' + event.meta['fileName'])
+
+
 def process_video(event_id=0, video_path=None, output_path="video/test.output.mp4", draw_ball_trace=False,
                   ball_trace_length=7):
     with with_session() as session:
-
         court_detector = CourtDetectorComputerVision(verbose=False)
         player_detector = PlayerDetector(device)
         ball_tracker = BallTracker(device)
@@ -137,6 +146,8 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
         out_video.release()
         cv2.destroyAllWindows()
 
+        upload_processed_video(event_id, output_path, session)
+
 # if __name__ == '__main__':
 #     parser = argparse.ArgumentParser()
 #     parser.add_argument('--video_path', type=str, help='path to input video', default="video/test_short.mp4")
@@ -145,9 +156,9 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
 #
 #     with with_session() as session:
 #         store = EventStore(session)
-#         event = store.create_event("read_task_test", "1", {
+#         created_event = store.create_event("read_task_test", "1", {
 #             "account_id": "1",
-#             "fileName": "test_short.mp4",
+#             "fileName": "input.mp4",
 #         })
 #
-#         download_video_to_process(event.id, session)
+#         upload_processed_video(event_id=created_event.id, output_path="video/input.mp4", session=session)

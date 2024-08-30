@@ -6,9 +6,9 @@ app = Celery('tasks', broker='redis://localhost:6379/0')
 
 # Celery configuration
 app.conf.beat_schedule = {
-    'read_task_test-every-10-seconds': {
+    'read_task_test-every-1-minute': {
         'task': 'tasks.read_task_test.read_task_test',
-        'schedule': 10,
+        'schedule': 60,
     },
 }
 
