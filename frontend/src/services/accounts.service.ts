@@ -25,11 +25,8 @@ export const useLoginMutation = (onSuccess?: VoidFunction) => {
     return useMutation({
         mutationKey: ["login"],
         // @ts-ignore
-        mutationFn: async ({username, password}) => {
-            const response = await api.current.post("/accounts/login", {
-                username,
-                password,
-            });
+        mutationFn: async (credentials: { username: string, password: String }) => {
+            const response = await api.current.post("/accounts/login", credentials);
             return response.data;
         },
         onSuccess
@@ -49,20 +46,17 @@ export const useLogoutMutation = (onSuccess?: VoidFunction) => {
 }
 
 
-export const useRegisterMutation = () => {
+export const useRegisterMutation = (onSuccess?: VoidFunction) => {
     const api = useRef(new Api());
 
 
     return useMutation({
         mutationKey: ["register"],
-        // @ts-ignore
-        mutationFn: async ({email, username, password}) => {
-            return api.current.post("/accounts/", {
-                email,
-                username,
-                password,
-            });
+
+        mutationFn: async (credentials: { email: string, username: string, password: string }) => {
+            return api.current.post("/accounts/", credentials);
         },
+        onSuccess,
     });
 
 }

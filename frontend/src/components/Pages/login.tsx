@@ -12,12 +12,13 @@ import {
 import {useToggle, upperFirst} from "@mantine/hooks";
 import {useForm} from "@mantine/form";
 import {useNavigate} from "react-router-dom";
-import {useLoginMutation, useMeQuery} from "../../services/accounts.service.ts";
+import {useLoginMutation, useMeQuery, useRegisterMutation} from "../../services/accounts.service.ts";
 import {useEffect} from "react";
 
 export default function Login() {
     const navigate = useNavigate();
     const {data: user, isLoading} = useMeQuery();
+
     useEffect(() => {
         console.log("here", user);
         if (user) navigate("/");
@@ -28,6 +29,7 @@ export default function Login() {
         navigate("/");
     };
     const loginMutation = useLoginMutation(onSuccess);
+    const registerMutation = useRegisterMutation(onSuccess);
     const form = useForm({
         initialValues: {
             email: "",
@@ -57,7 +59,7 @@ export default function Login() {
         } else {
             try {
                 const {email, username, password} = form.values;
-                await register(email, username, password);
+                await registerMutation.mutate({email, username, password});
             } catch (error) {
                 console.error("Register failed:", error);
             }
