@@ -28,6 +28,7 @@ class StorageClient:
             self.client.fput_object(
                 MINIO_BUCKET_NAME, object_name, file_path
             )
+            
             return UploadResult(object_name=object_name, account_id=account_id)
         except S3Error as err:
             raise Exception(f"File upload failed: {err}")
@@ -38,6 +39,7 @@ class StorageClient:
             self.client.fget_object(
                 MINIO_BUCKET_NAME, object_name, destination_path
             )
+
             return f"File downloaded successfully to {destination_path}"
         except S3Error as err:
             return f"File download failed: {err}"

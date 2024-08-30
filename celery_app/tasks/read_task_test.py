@@ -1,24 +1,43 @@
 from celery_app.celery_config import app
-from celery_app.task_queue import TaskQueue, TaskItem
+from celery_app.task_queue import TaskQueue, TaskItem, _REDIS_CONFIG
 from db.models import with_session
 from db.stores import EventStore
 from tennis_video_analyzer.tennis_video_analyzer import process_video
+from contextlib import contextmanager
+from redis import StrictRedis
+import uuid
+
+redis_connection = StrictRedis(host=_REDIS_CONFIG.host, port=_REDIS_CONFIG.port)
+
+REMOVE_ONLY_IF_OWNER_SCRIPT = \
+    """if redis.call("get",KEYS[1]) == ARGV[1] then
+        return redis.call("del",KEYS[1])
+    else
+        return 0
+    end
+    """
+
+
+@contextmanager
+def redis_lock(lock_name, expires=60):
+    random_value = str(uuid.uuid4())
+    lock_acquired = bool(
+        redis_connection.set(lock_name, random_value, ex=expires, nx=True)
+    )
+    yield lock_acquired
+    if lock_acquired:
+        redis_connection.eval(REMOVE_ONLY_IF_OWNER_SCRIPT, 1, lock_name, random_value)
 
 
 @app.task()
 def read_task_test():
     print("Read Task Test: started")
 
-    task_queue = TaskQueue()
+    with redis_lock('read_task_test_lock', 180) as acquired:
+        if not acquired:
+            print("Read Task Test: lock not acquired")
+            return
 
-    lock_name = "read_task_test_lock"
-    lock = task_queue.lock(lock_name)
-
-    if not lock:
-        print("Task is already being processed by another worker. Exiting...")
-        return
-
-    try:
         with with_session() as session:
             print(f"Read Task Test: session: {session}")
 
@@ -47,5 +66,3 @@ def read_task_test():
                 process_video(event_id=event.id)
             else:
                 print("No task found")
-    finally:
-        task_queue.unlock(lock)
