@@ -59,7 +59,7 @@ export default function Login() {
         } else {
             try {
                 const {email, username, password} = form.values;
-                await registerMutation.mutate({email, username, password});
+                registerMutation.mutate({email, username, password});
             } catch (error) {
                 console.error("Register failed:", error);
             }
