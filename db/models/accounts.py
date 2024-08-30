@@ -1,9 +1,9 @@
 from .base_model import BaseModel
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, table
 
 
 class Account(BaseModel):
-    __table__ = 'accounts'
+    __tablename__ = 'accounts'
     id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)

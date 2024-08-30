@@ -1,19 +1,6 @@
 version: '3.8'
 
 services:
-  mongo:
-    image: arm64v8/mongo:4.4.14
-    platform: linux/arm64/v8
-    container_name: mongo
-    ports:
-      - "27017:27017"
-    volumes:
-      - ./mongo-data:/data/db
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-
   redis:
     image: redis:latest
     container_name: redis

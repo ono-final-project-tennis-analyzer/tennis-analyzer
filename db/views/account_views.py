@@ -1,10 +1,12 @@
 from flask import Blueprint, request, jsonify
-
-from stores import AccountStore
 from flask_login import login_user, logout_user, current_user, login_required
 
+from db.stores.account_store import AccountStore
+from db.models import with_session
+
 account_bp = Blueprint('accounts', __name__)
-account_store = AccountStore()
+with with_session() as session:
+    account_store = AccountStore(session)
 
 
 @account_bp.route('/', methods=['GET', 'POST'])
