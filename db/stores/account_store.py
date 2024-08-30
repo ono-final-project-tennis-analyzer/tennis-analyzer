@@ -14,12 +14,12 @@ class AccountStore:
         account = Account(username=username, email=email, password=hash_password)
         self._session.add(account)
         self._session.commit()
-        return self.get_account_for_return(account)
+        return account
 
     def get_account(self, account_id):
         account = self._session.query(Account).filter(Account.id == account_id).first()
         if account:
-            return self.get_account_for_return(account)
+            return account
         return None
 
     def update_account(self, account_id, data):
@@ -35,23 +35,26 @@ class AccountStore:
     def list_accounts(self):
         query = self._session.query(Account)
         accounts = query.all()
+        json_accounts = []
+        for account in accounts:
+            json_accounts.append(self.get_account_for_return(account))
         count = query.count()
         return {
-            "accounts": accounts,
+            "accounts": json_accounts,
             "count": count,
         }
 
     def get_account_by_email(self, email):
         account = self._session.query(Account).filter(Account.email == email).first()
         if account:
-            return self.get_account_for_return(account)
+            return account
         else:
             return None
 
     def login(self, email, password):
         account = self._session.query(Account).filter(Account.email == email).first()
         if account and check_password_hash(account.password, password):
-            return {account.id, account.username, account.email, account.created_at, account.updated_at}
+            return account
         else:
             return None
 

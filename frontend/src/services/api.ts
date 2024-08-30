@@ -1,4 +1,5 @@
 import axios, {AxiosInstance} from "axios";
+// @ts-ignore
 import cookie from "cookie";
 
 export default class Api {
@@ -6,12 +7,13 @@ export default class Api {
 
     constructor(userId?: string) {
         this.client = axios.create();
-        this.client.defaults.baseURL = "http://localhost:8000";
+        this.client.defaults.baseURL = "http://localhost:8081";
         this.client.defaults.headers.common["Content-Type"] = "application/json";
         this.client.defaults.headers.common["UserId"] = userId;
         this.client.defaults.withCredentials = true;
     }
 
+    // @ts-ignore
     private getSession() {
         const cookies = cookie.parse(document.cookie);
         return cookies["session"];

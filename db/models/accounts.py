@@ -1,5 +1,5 @@
 from .base_model import BaseModel
-from sqlalchemy import Column, Integer, String, DateTime, table
+from sqlalchemy import Column, Integer, String, DateTime, table, Boolean
 
 
 class Account(BaseModel):
@@ -20,3 +20,6 @@ class Account(BaseModel):
     @property
     def is_anonymous(self):
         return False
+
+    def get_id(self):
+        return str(self.id)
