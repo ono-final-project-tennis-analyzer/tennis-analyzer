@@ -77,8 +77,8 @@ export default function Login() {
                 <Stack>
                     <TextInput
                         required
-                        label="Username"
-                        placeholder="Your username"
+                        label="Email"
+                        placeholder="Your Email"
                         value={form.values.username}
                         onChange={(event) =>
                             form.setFieldValue("username", event.currentTarget.value)
