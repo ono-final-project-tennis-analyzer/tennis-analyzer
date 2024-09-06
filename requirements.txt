@@ -31,3 +31,4 @@ minio
 flask-login
 flask-cors
 cryptography
+alembic

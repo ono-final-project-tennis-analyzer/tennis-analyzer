@@ -7,8 +7,6 @@ import config
 # Base model setup
 Base = declarative_base()
 
-DATABASE_URL = f"postgresql://{config.POSTGRES_USER}:{config.POSTGRES_PASSWORD}@{config.POSTGRES_HOST}:{config.POSTGRES_PORT}/{config.POSTGRES_DB}"
-
 
 class BaseModel(Base):
     __abstract__ = True
@@ -19,14 +17,15 @@ class BaseModel(Base):
 def create_session():
     from db.models.events_model import Events
 
-    engine = create_engine(DATABASE_URL)
-    Base.metadata.create_all(bind=engine)
+    engine = create_engine(config.DATABASE_URL)
+    # Base.metadata.create_all(bind=engine)
     return Session(bind=engine)
+
 
 def with_session():
     from db.models.events_model import Events
 
-    engine = create_engine(DATABASE_URL)
-    Base.metadata.create_all(bind=engine)
+    engine = create_engine(config.DATABASE_URL)
+    # Base.metadata.create_all(bind=engine)
     Session = sessionmaker(engine)
     return Session()
