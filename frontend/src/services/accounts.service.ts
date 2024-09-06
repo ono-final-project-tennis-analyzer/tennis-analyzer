@@ -13,7 +13,6 @@ export const useMeQuery = () => {
             const response = await api.current.get<User>("/accounts/@me");
             return response;
         },
-        // @ts-ignore
         select: ({data}) => data.user as User,
         retry: false,
     });

@@ -7,7 +7,7 @@ import {
     Button,
     Checkbox,
     Anchor,
-    Stack,
+    Stack, Flex, Grid,
 } from "@mantine/core";
 import {useToggle, upperFirst} from "@mantine/hooks";
 import {useForm} from "@mantine/form";
@@ -69,7 +69,8 @@ export default function Login() {
     if (isLoading) return <div>Loading...</div>
 
     return (
-        <Paper radius="md" p="xl" withBorder>
+        <div style={{display:"grid", gridTemplateColumns: "600px auto", width: "100%"}}>
+            <Paper radius="md" p="xl" withBorder>
             <Text size="lg" fw={500}>
                 Welcome to Tennis App, {type} with your account
             </Text>
@@ -142,5 +143,7 @@ export default function Login() {
                 </Group>
             </form>
         </Paper>
+            <img src="/left.webp"/>
+        </div>
     );
 }

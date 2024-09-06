@@ -1,8 +1,13 @@
 from bson.objectid import ObjectId
+from sqlalchemy.orm import Session
+
 from ..models.video_model import Videos
 
 
 class VideoStore:
+    def __init__(self, session: Session):
+        self._session = session
+
     def save_video(self, account_id: str, object_name: str):
         video = Videos(account_id, object_name)
         video.save()

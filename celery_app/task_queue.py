@@ -19,6 +19,7 @@ class TaskItem:
     name: str
     type: str
     meta: dict
+    event_id: int
     id: Optional[str] = None
 
 
