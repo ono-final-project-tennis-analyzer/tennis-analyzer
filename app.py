@@ -4,12 +4,12 @@ from flask_login import LoginManager
 from flask import jsonify
 
 from db.models import with_session
-from db.stores.account_store import AccountStore
 from web.health import health_bp
 from web.task import task_bp
 from web.file import file_bp
 from db.views import account_bp
 import config
+from db.stores.account_store import AccountStore
 
 login_manager = LoginManager()
 
