@@ -1,17 +1,14 @@
-from bson.objectid import ObjectId
 from sqlalchemy.orm import Session
 from ..models.accounts import Account
-from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class AccountStore:
-
     def __init__(self, session: Session):
         self._session = session
 
     def create_account(self, username, email, password):
-        hash_password = generate_password_hash(password)
-        account = Account(username=username, email=email, password=hash_password)
+        account = Account(username=username, email=email)
+        account.password = password
         self._session.add(account)
         self._session.commit()
         return account
@@ -53,7 +50,7 @@ class AccountStore:
 
     def login(self, email, password):
         account = self._session.query(Account).filter(Account.email == email).first()
-        if account and check_password_hash(account.password, password):
+        if account and account.password == password:
             return account
         else:
             return None

@@ -27,3 +27,6 @@ POSTGRES_PASSWORD = 'postgres'
 POSTGRES_DB = 'postgres'
 POSTGRES_HOST = 'localhost'  # or the name of your docker network bridge
 POSTGRES_PORT = '5432'
+
+# ENCRYPTION
+ACCOUNT_PASSWORD_ENCRYPTION_KEY = os.getenv("ACCOUNT_PASSWORD_ENCRYPTION_KEY")
