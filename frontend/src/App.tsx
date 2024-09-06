@@ -1,6 +1,6 @@
 import "@mantine/core/styles.css";
-import {Button, MantineProvider} from "@mantine/core";
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {Button, MantineProvider, Modal} from "@mantine/core";
+import {BrowserRouter, Outlet, Route, Routes} from "react-router-dom";
 import Home from "./components/Pages/home.tsx";
 import Login from "./components/Pages/login.tsx";
 import {PrivateRoute} from "./components/utils/PrivateRoute.tsx";
@@ -18,13 +18,10 @@ function App() {
                         <Route path="/login" element={<Login/>}/>
                         <Route path="/" element={<PrivateRoute><Layout/></PrivateRoute>}>
                             <Route index element={<Home/>}/>
-                            <Route path="videos" element={<div>videos</div>}>
-                                <Route path="videoUplaod"
-                                       element={<Popover width={200} position="bottom" withArrow shadow="md">
-                                           <Popover.Target>
-                                               <Button>Toggle popover</Button>
-                                           </Popover.Target>
-                                       </Popover>}/>
+                            <Route path="videos" element={<div>videos <Outlet/></div>}>
+                                <Route path="videoUpload"
+                                       element={<Modal onClose={() => {
+                                       }} opened={true}/>}/>
                             </Route>
 
                         </Route>
