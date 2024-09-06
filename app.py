@@ -4,6 +4,7 @@ from flask_login import LoginManager
 from flask import jsonify
 
 from db.models import with_session
+from db.views.events_view import event_bp
 from db.views import account_bp
 import config
 from db.stores.account_store import AccountStore
@@ -31,7 +32,6 @@ def unauthorized():
 
 # Register blueprints
 app.register_blueprint(account_bp, url_prefix='/accounts')
-# app.register_blueprint(video_bp, url_prefix='/videos')
-
+app.register_blueprint(event_bp)
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8081)
