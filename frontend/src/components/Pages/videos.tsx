@@ -2,12 +2,15 @@ import {Button, FileButton, Group, Text} from "@mantine/core";
 
 import {Outlet} from "react-router-dom";
 import {useRef, useState} from "react";
+import {useUploadFileMutation} from "../../services/file.service.ts";
 
 export const Videos = () => {
     const [file, setFile] = useState<File | null>(null);
     const resetRef = useRef<() => void>(null);
+    const uploadFile = useUploadFileMutation();
+
     const uploadVideo = () => {
-        
+        uploadFile.mutate(file as File);
     }
     const clearFile = () => {
         setFile(null);

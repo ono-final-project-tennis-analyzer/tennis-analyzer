@@ -34,6 +34,6 @@ def unauthorized():
 # Register blueprints
 app.register_blueprint(account_bp, url_prefix='/accounts')
 app.register_blueprint(event_bp)
-app.register_blueprint(file_bp, url_prefix='/files')
+app.register_blueprint(file_bp, url_prefix='/file')
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8081)
