@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 
 from db.models import create_session
-from db.stores import EventStore
+from db.stores.events_store import EventStore
 
 task_bp = Blueprint('task', __name__)
 
