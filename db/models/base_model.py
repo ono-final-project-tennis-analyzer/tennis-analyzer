@@ -15,16 +15,12 @@ class BaseModel(Base):
 
 
 def create_session():
-    from db.models.events_model import Events
-
     engine = create_engine(config.DATABASE_URL)
     # Base.metadata.create_all(bind=engine)
     return Session(bind=engine)
 
 
 def with_session():
-    from db.models.events_model import Events
-
     engine = create_engine(config.DATABASE_URL)
     # Base.metadata.create_all(bind=engine)
     Session = sessionmaker(engine)
