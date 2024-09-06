@@ -28,7 +28,7 @@ class StorageClient:
             self.client.fput_object(
                 MINIO_BUCKET_NAME, object_name, file_path
             )
-            
+
             return UploadResult(object_name=object_name, account_id=account_id)
         except S3Error as err:
             raise Exception(f"File upload failed: {err}")
@@ -51,3 +51,16 @@ class StorageClient:
             return f"File '{file_name}' deleted successfully."
         except S3Error as err:
             return f"Failed to delete file '{file_name}': {err}"
+
+    def stream_file(self, account_id: str, file_name: str):
+        response = None
+
+        try:
+            object_name = f"{account_id}/{file_name}"
+            response = self.client.get_object(MINIO_BUCKET_NAME, object_name)
+            return response
+        except S3Error as err:
+            return f"Failed to stream file '{file_name}': {err}"
+        finally:
+            response.close()
+            response.release_conn()
