@@ -6,7 +6,6 @@ import Login from "./components/Pages/login.tsx";
 import {PrivateRoute} from "./components/utils/PrivateRoute.tsx";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import Layout from "./components/Layout/layout.component.tsx";
-import {Popover, Text} from '@mantine/core';
 
 function App() {
     const queryClient = new QueryClient()
@@ -23,7 +22,6 @@ function App() {
                                        element={<Modal onClose={() => {
                                        }} opened={true}/>}/>
                             </Route>
-
                         </Route>
                     </Routes>
                 </BrowserRouter>
