@@ -1,15 +1,11 @@
-import {AppShell, Burger, Group, Skeleton, Text, Avatar, Button} from "@mantine/core";
+import {AppShell, Burger, Group, Text, Avatar, Button} from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
 import {useLogoutMutation, useMeQuery} from "../../services/accounts.service.ts";
-import {useNavigate} from "react-router-dom";
+import {Outlet, useNavigate} from "react-router-dom";
 import {Navbar} from "./Navbar.component.tsx";
 
-type LayoutProps = {
-    children: React.ReactNode;
-}
 
-
-export default function Layout({children}: LayoutProps) {
+export default function Layout() {
     const [opened, {toggle}] = useDisclosure();
     const navigate = useNavigate();
     const getUser = useMeQuery();
@@ -37,14 +33,14 @@ export default function Layout({children}: LayoutProps) {
                     <AvatarLogo/>
                     <Text>{getUser.data?.username}</Text>
                 </Group>
-                <Button onClick={mutate}>Logout</Button>
+                <Button onClick={() => mutate()}>Logout</Button>
             </Group>
         </AppShell.Header>
         <AppShell.Navbar p="md">
             <Navbar/>
         </AppShell.Navbar>
         <AppShell.Main>
-            {children}
+            <Outlet/>
         </AppShell.Main>
     </AppShell>);
 }

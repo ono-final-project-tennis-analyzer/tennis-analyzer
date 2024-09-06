@@ -5,6 +5,7 @@ import Home from "./components/Pages/home.tsx";
 import Login from "./components/Pages/login.tsx";
 import {PrivateRoute} from "./components/utils/PrivateRoute.tsx";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import Layout from "./components/Layout/layout.component.tsx";
 
 function App() {
     const queryClient = new QueryClient()
@@ -14,14 +15,10 @@ function App() {
                 <BrowserRouter>
                     <Routes>
                         <Route path="/login" element={<Login/>}/>
-                        <Route
-                            path="/"
-                            element={
-                                <PrivateRoute>
-                                    <Home/>
-                                </PrivateRoute>
-                            }
-                        />
+                        <Route path="/" element={<PrivateRoute><Layout/></PrivateRoute>}>
+                            <Route index element={<Home/>}/>
+                            <Route path="about" element={<div>About</div>}/>
+                        </Route>
                     </Routes>
                 </BrowserRouter>
             </MantineProvider>
