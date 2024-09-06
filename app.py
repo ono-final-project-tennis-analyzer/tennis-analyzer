@@ -8,6 +8,7 @@ from db.views.events_view import event_bp
 from db.views import account_bp
 import config
 from db.stores.account_store import AccountStore
+from db.views.file_view import file_bp
 
 login_manager = LoginManager()
 
@@ -33,5 +34,6 @@ def unauthorized():
 # Register blueprints
 app.register_blueprint(account_bp, url_prefix='/accounts')
 app.register_blueprint(event_bp)
+app.register_blueprint(file_bp, url_prefix='/files')
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8081)
