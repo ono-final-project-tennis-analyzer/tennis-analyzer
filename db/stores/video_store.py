@@ -1,5 +1,5 @@
 from bson.objectid import ObjectId
-from models.videos import Videos
+from ..models.video_model import Videos
 
 
 class VideoStore:

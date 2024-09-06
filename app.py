@@ -4,9 +4,6 @@ from flask_login import LoginManager
 from flask import jsonify
 
 from db.models import with_session
-from web.health import health_bp
-from web.task import task_bp
-from web.file import file_bp
 from db.views import account_bp
 import config
 from db.stores.account_store import AccountStore
@@ -33,9 +30,6 @@ def unauthorized():
 
 
 # Register blueprints
-app.register_blueprint(health_bp, url_prefix='/health')
-app.register_blueprint(task_bp, url_prefix='/task')
-app.register_blueprint(file_bp, url_prefix='/file')
 app.register_blueprint(account_bp, url_prefix='/accounts')
 # app.register_blueprint(video_bp, url_prefix='/videos')
 
