@@ -20,24 +20,28 @@ if not os.path.exists(UPLOAD_FOLDER):
 @file_bp.route('/', methods=['POST'])
 def create_file():
     try:
-        if 'file' not in request.files:
+        if 'video' not in request.files:
             return jsonify({"error": "No file provided"}), 400
 
-        file = request.files['file']
+        file = request.files['video']
+        file_type = file.filename.split('.')[-1]
+        
+        if file_type not in ['mp4', 'avi', 'flv']:
+            return jsonify({"error": "Invalid file type"}), 400
 
         storage = StorageClient()
         task_queue = TaskQueue()
 
         file_buffer = file.read()
-        file_name = f"{uuid.uuid4()}.mp4"
+        file_name = f"{uuid.uuid4()}.{file_type}"
         account_id = 12
 
         temp_file_path = os.path.join(UPLOAD_FOLDER, file_name)
 
-        with open(file_name, "w") as temp:
+        with open(temp_file_path, "wb") as temp:
             temp.write(file_buffer)
 
-        storage.upload_file(account_id=str(account_id), file_name=file_name, file_path=file_buffer)
+        storage.upload_file(account_id=str(account_id), file_name=file_name, file_path=temp_file_path)
 
         meta = {
             "file_name": file_name,

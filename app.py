@@ -15,7 +15,7 @@ login_manager = LoginManager()
 with with_session() as session:
     account_store = AccountStore(session)
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 1000 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 app.secret_key = config.APP_SECRET_KEY
 CORS(app, supports_credentials=True)
 login_manager.init_app(app)
