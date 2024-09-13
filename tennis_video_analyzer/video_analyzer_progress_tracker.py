@@ -1,4 +1,4 @@
-from db.stores import EventStore
+from db.stores.events_store import EventStore
 
 
 class VideoAnalyzerProgressTracker:
