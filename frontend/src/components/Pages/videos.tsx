@@ -1,10 +1,11 @@
 import {Button, FileButton, Group, Text} from "@mantine/core";
 
 import {Outlet, useNavigate} from "react-router-dom";
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useUploadFileMutation} from "../../services/file.service.ts";
 
 export const Videos = () => {
+    const timer = useRef(0);
     const [file, setFile] = useState<File | null>(null);
     const navigate = useNavigate();
     const resetRef = useRef<() => void>(null);
@@ -19,6 +20,17 @@ export const Videos = () => {
         setFile(null);
         resetRef.current?.();
     };
+
+    useEffect(() => {
+        timer.current = window.setInterval(() => {
+            console.log("Timer is running");
+        }, 1000);
+
+        return () => {
+            window.clearInterval(timer.current);
+        }
+    }, []);
+
     return (
         <div style={{
             display: "flex",

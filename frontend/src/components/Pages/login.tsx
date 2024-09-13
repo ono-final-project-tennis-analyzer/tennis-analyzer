@@ -20,7 +20,6 @@ export default function Login() {
     const {data: user, isLoading} = useMeQuery();
 
     useEffect(() => {
-        console.log("here", user);
         if (user) navigate("/");
     }, [user]);
 
@@ -69,80 +68,80 @@ export default function Login() {
     if (isLoading) return <div>Loading...</div>
 
     return (
-        <div style={{display:"grid", gridTemplateColumns: "600px auto", width: "100%"}}>
+        <div style={{display: "grid", gridTemplateColumns: "600px auto", width: "100%"}}>
             <Paper radius="md" p="xl" withBorder>
-            <Text size="lg" fw={500}>
-                Welcome to Tennis App, {type} with your account
-            </Text>
-            <form onSubmit={handleSubmit}>
-                <Stack>
-                    <TextInput
-                        required
-                        label="Email"
-                        placeholder="Your Email"
-                        value={form.values.username}
-                        onChange={(event) =>
-                            form.setFieldValue("username", event.currentTarget.value)
-                        }
-                        radius="md"
-                    />
-                    {type === "register" && (
+                <Text size="lg" fw={500}>
+                    Welcome to Tennis App, {type} with your account
+                </Text>
+                <form onSubmit={handleSubmit}>
+                    <Stack>
                         <TextInput
                             required
                             label="Email"
-                            placeholder="Enter email here"
-                            value={form.values.email}
+                            placeholder="Your Email"
+                            value={form.values.username}
                             onChange={(event) =>
-                                form.setFieldValue("email", event.currentTarget.value)
+                                form.setFieldValue("username", event.currentTarget.value)
                             }
-                            error={form.errors.email && "Invalid email"}
                             radius="md"
                         />
-                    )}
-                    <PasswordInput
-                        required
-                        label="Password"
-                        placeholder="Your password"
-                        value={form.values.password}
-                        onChange={(event) =>
-                            form.setFieldValue("password", event.currentTarget.value)
-                        }
-                        error={
-                            form.errors.password &&
-                            "Password should include at least 3 characters"
-                        }
-                        radius="md"
-                    />
-
-                    {type === "register" && (
-                        <Checkbox
+                        {type === "register" && (
+                            <TextInput
+                                required
+                                label="Email"
+                                placeholder="Enter email here"
+                                value={form.values.email}
+                                onChange={(event) =>
+                                    form.setFieldValue("email", event.currentTarget.value)
+                                }
+                                error={form.errors.email && "Invalid email"}
+                                radius="md"
+                            />
+                        )}
+                        <PasswordInput
                             required
-                            label="I accept terms and conditions"
-                            checked={form.values.terms}
+                            label="Password"
+                            placeholder="Your password"
+                            value={form.values.password}
                             onChange={(event) =>
-                                form.setFieldValue("terms", event.currentTarget.checked)
+                                form.setFieldValue("password", event.currentTarget.value)
                             }
+                            error={
+                                form.errors.password &&
+                                "Password should include at least 3 characters"
+                            }
+                            radius="md"
                         />
-                    )}
-                </Stack>
-                <Group justify="space-between" mt="xl">
-                    <Anchor
-                        component="button"
-                        type="button"
-                        c="dimmed"
-                        onClick={() => toggle()}
-                        size="xs"
-                    >
-                        {type === "register"
-                            ? "Already have an account? Login"
-                            : "Don't have an account? Register"}
-                    </Anchor>
-                    <Button type="submit" radius="xl">
-                        {upperFirst(type)}
-                    </Button>
-                </Group>
-            </form>
-        </Paper>
+
+                        {type === "register" && (
+                            <Checkbox
+                                required
+                                label="I accept terms and conditions"
+                                checked={form.values.terms}
+                                onChange={(event) =>
+                                    form.setFieldValue("terms", event.currentTarget.checked)
+                                }
+                            />
+                        )}
+                    </Stack>
+                    <Group justify="space-between" mt="xl">
+                        <Anchor
+                            component="button"
+                            type="button"
+                            c="dimmed"
+                            onClick={() => toggle()}
+                            size="xs"
+                        >
+                            {type === "register"
+                                ? "Already have an account? Login"
+                                : "Don't have an account? Register"}
+                        </Anchor>
+                        <Button type="submit" radius="xl">
+                            {upperFirst(type)}
+                        </Button>
+                    </Group>
+                </form>
+            </Paper>
             <img src="/left.webp"/>
         </div>
     );

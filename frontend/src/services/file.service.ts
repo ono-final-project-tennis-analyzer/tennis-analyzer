@@ -20,7 +20,6 @@ export function useUploadFileMutation(onSuccess?: (data: any) => void) {
         },
 
         onSuccess: (data) => {
-            console.log(data);
             onSuccess?.(data)
         },
 

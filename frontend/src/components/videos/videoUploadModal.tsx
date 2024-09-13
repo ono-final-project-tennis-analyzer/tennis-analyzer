@@ -4,7 +4,7 @@ export const VideoUploadModal = () => {
     return (
         <Modal onClose={() => {
         }} closeButtonProps={{hidden: true}} opened={true}>
-            Your video progress...
+            Your video upload progress...
             <Progress animated value={10}/>
         </Modal>
     )
