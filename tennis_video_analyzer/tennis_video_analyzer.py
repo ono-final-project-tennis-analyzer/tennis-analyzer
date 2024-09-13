@@ -5,7 +5,7 @@ import torch
 from db.models import with_session
 from ball_detector.ball_tracker import BallTracker
 from court_detector.court_detection_computer_vision import CourtDetectorComputerVision
-from db.stores import EventStore
+from db.stores.events_store import EventStore
 from player_detector.player_detection import PlayerDetector
 from storage_client import StorageClient
 from utils.video_utils import get_video_properties
