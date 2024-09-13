@@ -7,7 +7,7 @@ app = Celery('tasks', broker='redis://localhost:6379/0')
 # Celery configuration
 app.conf.beat_schedule = {
     'read_task_test-every-1-minute': {
-        'task': 'tasks.read_task_test.read_task_test',
+        'task': 'tasks.read_task.read_task',
         'schedule': 60,
     },
 }
@@ -15,4 +15,4 @@ app.conf.beat_schedule = {
 app.conf.timezone = 'UTC'
 
 # Import tasks to register them
-import tasks.read_task
+import tasks
