@@ -10,6 +10,13 @@ services:
       - ./redis-data:/data
     restart: always
 
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: redisinsight
+    ports:
+      - "8001:8001"
+    restart: always
+
   minio:
     image: minio/minio:latest
     container_name: minio
