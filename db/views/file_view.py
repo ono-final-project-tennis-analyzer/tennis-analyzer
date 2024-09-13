@@ -62,7 +62,7 @@ def create_file():
                 meta=meta
             ))
             os.remove(temp_file_path)
-            read_task_test.apply_async(event.id)
+            read_task_test.apply_async()
             return jsonify({"status": "True", "event_id": event.id}), 200
     except Exception as e:
         print(f"Error occurred: {e}")
