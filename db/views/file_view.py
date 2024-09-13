@@ -4,7 +4,7 @@ import uuid
 from flask import Blueprint, jsonify, request
 
 from celery_app.task_queue import TaskQueue, TaskItem
-from celery_app.tasks.read_task_test import read_task_test
+from celery_app.tasks.read_task import read_task
 from db.models import create_session
 from db.stores.events_store import EventStore
 from storage_client import StorageClient
@@ -62,7 +62,7 @@ def create_file():
                 meta=meta
             ))
             os.remove(temp_file_path)
-            read_task_test.apply_async()
+            read_task.apply_async()
             return jsonify({"status": "True", "event_id": event.id}), 200
     except Exception as e:
         print(f"Error occurred: {e}")

@@ -30,7 +30,7 @@ def redis_lock(lock_name, expires=60):
 
 
 @app.task()
-def read_task_test():
+def read_task():
     print("Read Task Test: started")
 
     with redis_lock('read_task_test_lock', 180) as acquired:

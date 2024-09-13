@@ -15,4 +15,4 @@ app.conf.beat_schedule = {
 app.conf.timezone = 'UTC'
 
 # Import tasks to register them
-import tasks.read_task_test
+import tasks.read_task
