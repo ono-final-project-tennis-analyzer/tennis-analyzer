@@ -1,7 +1,7 @@
 from celery_app.celery_config import app
-from celery_app.task_queue import TaskQueue, TaskItem, _REDIS_CONFIG
+from celery_app.task_queue import TaskQueue, _REDIS_CONFIG
 from db.models import with_session
-from db.stores import EventStore
+from db.stores.events_store import EventStore
 from tennis_video_analyzer.tennis_video_analyzer import process_video
 from contextlib import contextmanager
 from redis import StrictRedis
@@ -30,7 +30,7 @@ def redis_lock(lock_name, expires=60):
 
 
 @app.task()
-def read_task_test():
+def read_task():
     print("Read Task Test: started")
 
     with redis_lock('read_task_test_lock', 180) as acquired:
@@ -41,17 +41,8 @@ def read_task_test():
         with with_session() as session:
             print(f"Read Task Test: session: {session}")
 
-            # task_queue = TaskQueue()
-            # task = task_queue.get_next_task()
-
-            task = TaskItem(
-                name="read_task_test",
-                type="event",
-                meta={
-                    "account_id": "1",
-                    "fileName": "test_short.mp4",
-                }
-            )
+            task_queue = TaskQueue()
+            task = task_queue.get_next_task()
 
             print(f"Read task from redis: {task=}")
 
@@ -59,7 +50,7 @@ def read_task_test():
                 print(f"TASK_QUEUE: read task {task.__dict__}")
 
                 store = EventStore(session)
-                event = store.create_event(task.name, task.meta['account_id'], task.meta)
+                event = store.get_event(task.event_id)
 
                 print(f"Create event: {event.id}")
 
