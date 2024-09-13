@@ -16,7 +16,7 @@ def manage_accounts():
         if account_store.get_account_by_email(data['email']):
             return jsonify({"message": "Account already exists"}), 400
         account = account_store.create_account(data['username'], data['email'], data['password'])
-        return jsonify({"message": "Account created successfully", "account_id": str(account)}), 201
+        return jsonify({"message": "Account created successfully", "account_id": account.id}), 201
     else:
         accounts = account_store.list_accounts()
         return jsonify(accounts), 200

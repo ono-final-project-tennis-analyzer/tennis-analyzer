@@ -7,6 +7,7 @@ from celery_app.task_queue import TaskQueue, TaskItem
 from db.models import create_session
 from db.stores.events_store import EventStore
 from storage_client import StorageClient
+from flask_login import current_user, login_required
 
 file_bp = Blueprint('file', __name__)
 
@@ -17,6 +18,7 @@ if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
 
+@login_required
 @file_bp.route('/', methods=['POST'])
 def create_file():
     try:
@@ -25,7 +27,7 @@ def create_file():
 
         file = request.files['video']
         file_type = file.filename.split('.')[-1]
-        
+
         if file_type not in ['mp4', 'avi', 'flv']:
             return jsonify({"error": "Invalid file type"}), 400
 
@@ -34,7 +36,7 @@ def create_file():
 
         file_buffer = file.read()
         file_name = f"{uuid.uuid4()}.{file_type}"
-        account_id = 12
+        account_id = current_user.id
 
         temp_file_path = os.path.join(UPLOAD_FOLDER, file_name)
 

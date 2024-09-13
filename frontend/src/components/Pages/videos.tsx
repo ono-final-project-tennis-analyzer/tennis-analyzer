@@ -1,13 +1,16 @@
 import {Button, FileButton, Group, Text} from "@mantine/core";
 
-import {Outlet} from "react-router-dom";
+import {Outlet, useNavigate} from "react-router-dom";
 import {useRef, useState} from "react";
 import {useUploadFileMutation} from "../../services/file.service.ts";
 
 export const Videos = () => {
     const [file, setFile] = useState<File | null>(null);
+    const navigate = useNavigate();
     const resetRef = useRef<() => void>(null);
-    const uploadFile = useUploadFileMutation();
+    const uploadFile = useUploadFileMutation((data) => {
+        navigate(`/videos/videoUpload/${data.event_id}`);
+    });
 
     const uploadVideo = () => {
         uploadFile.mutate(file as File);

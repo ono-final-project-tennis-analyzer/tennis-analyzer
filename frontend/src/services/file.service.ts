@@ -8,8 +8,13 @@ export function useUploadFileMutation(onSuccess?: (data: any) => void) {
         mutationKey: ["uploadFile"],
         mutationFn: async (file: File) => {
             const formData = new FormData();
-            formData.append("file", file);
-            const response = await api.current.post('/file/', formData);
+            formData.append("video", file);
+            const config = {
+                headers: {
+                    'content-type': 'multipart/form-data',
+                },
+            };
+            const response = await api.current.post('/file/', formData, config);
 
             return response.data;
         },
@@ -17,6 +22,7 @@ export function useUploadFileMutation(onSuccess?: (data: any) => void) {
         onSuccess: (data) => {
             console.log(data);
             onSuccess?.(data)
-        }
+        },
+
     })
 }
