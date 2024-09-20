@@ -1,32 +1,9 @@
+from celery_app.task_queue.redis_lock import redis_lock
 from celery_config import app
-from celery_app.task_queue import TaskQueue, _REDIS_CONFIG
+from celery_app.task_queue import TaskQueue
 from db.models import with_session
 from db.stores.events_store import EventStore
 from tennis_video_analyzer.tennis_video_analyzer import process_video
-from contextlib import contextmanager
-from redis import StrictRedis
-import uuid
-
-redis_connection = StrictRedis(host=_REDIS_CONFIG.host, port=_REDIS_CONFIG.port)
-
-REMOVE_ONLY_IF_OWNER_SCRIPT = \
-    """if redis.call("get",KEYS[1]) == ARGV[1] then
-        return redis.call("del",KEYS[1])
-    else
-        return 0
-    end
-    """
-
-
-@contextmanager
-def redis_lock(lock_name, expires=60):
-    random_value = str(uuid.uuid4())
-    lock_acquired = bool(
-        redis_connection.set(lock_name, random_value, ex=expires, nx=True)
-    )
-    yield lock_acquired
-    if lock_acquired:
-        redis_connection.eval(REMOVE_ONLY_IF_OWNER_SCRIPT, 1, lock_name, random_value)
 
 
 @app.task()
