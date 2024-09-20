@@ -1,6 +1,6 @@
 import {IconUpload, IconVideo, IconX} from "@tabler/icons-react";
 import {Dropzone} from '@mantine/dropzone';
-import {Group, Text, rem, Card} from "@mantine/core";
+import {Group, Text, rem} from "@mantine/core";
 import {useState} from "react";
 import {useUploadFileMutation} from "../../../services/file.service.ts";
 import {useNavigate} from "react-router-dom";

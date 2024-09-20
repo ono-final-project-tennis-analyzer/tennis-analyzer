@@ -1,12 +1,13 @@
-import {Modal, Progress} from "@mantine/core";
+import {Modal} from "@mantine/core";
+import {useState} from "react";
 
 export const VideoUploadModal = () => {
-
+    const [opened, setOpened] = useState(true);
     return (
         <Modal onClose={() => {
-        }} closeButtonProps={{hidden: true}} opened={true}>
+            setOpened(false);
+        }} closeButtonProps={{hidden: true}} opened={opened}>
             You video uploaded successfully!
-            {/*<Progress animated value={10}/>*/}
         </Modal>
     )
 }

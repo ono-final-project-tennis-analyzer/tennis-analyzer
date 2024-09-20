@@ -34,7 +34,7 @@ export const DropzoneLoadingModal = ({opened}: DropzoneLoadingModalProps) => {
     }, [opened]);
 
     return (
-        <Modal opened={opened} onClose={() => {
+        <Modal closeButtonProps={{hidden: true}} opened={opened} onClose={() => {
         }}>
             This is your video upload progress...
             <Progress animated value={progress}/>
