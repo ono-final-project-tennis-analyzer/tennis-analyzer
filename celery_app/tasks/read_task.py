@@ -1,4 +1,4 @@
-from celery_app.celery_config import app
+from celery_config import app
 from celery_app.task_queue import TaskQueue, _REDIS_CONFIG
 from db.models import with_session
 from db.stores.events_store import EventStore
