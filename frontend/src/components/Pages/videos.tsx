@@ -4,6 +4,7 @@ import {Outlet, useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import {useUploadFileMutation} from "../../services/file.service.ts";
 import {DropzoneComponent} from "../Dashboard/Dropzone/DropzoneComponent.tsx";
+import Table from "../Table";
 
 export const Videos = () => {
     const timer = useRef(0);
@@ -23,7 +24,7 @@ export const Videos = () => {
         setFile(null);
         resetRef.current?.();
     };
-    
+
 
     return (
         <div style={{
@@ -33,6 +34,7 @@ export const Videos = () => {
 
         }}>
             <DropzoneComponent/>
+            {/*<Table data={[]} columns={[]}/>*/}
             <Outlet/>
         </div>
     )
