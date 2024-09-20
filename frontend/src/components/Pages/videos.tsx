@@ -23,16 +23,7 @@ export const Videos = () => {
         setFile(null);
         resetRef.current?.();
     };
-
-    useEffect(() => {
-        timer.current = window.setInterval(() => {
-            console.log("Timer is running");
-        }, 1000);
-
-        return () => {
-            window.clearInterval(timer.current);
-        }
-    }, []);
+    
 
     return (
         <div style={{
