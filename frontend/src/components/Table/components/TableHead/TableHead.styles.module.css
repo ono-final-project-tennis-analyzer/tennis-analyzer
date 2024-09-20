@@ -1,0 +1,17 @@
+.head {
+  position: sticky;
+  top: 0;
+  background: white;
+}
+
+.sortItem {
+  margin-left: 8px;
+  position: relative;
+  top: 3px;
+  cursor: pointer;
+}
+
+table th.noResize {
+  resize: unset;
+  overflow: hidden;
+}

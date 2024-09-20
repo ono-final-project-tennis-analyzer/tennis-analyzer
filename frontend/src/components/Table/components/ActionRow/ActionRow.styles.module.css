@@ -1,0 +1,8 @@
+.action {
+  border: 0;
+  margin: 0 8px;
+}
+
+.action:active {
+  transform: none !important;
+}
