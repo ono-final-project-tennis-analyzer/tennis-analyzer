@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { BaseCellData } from "@/components/Table";
+import { BaseCellData } from "../@Table.types.ts";
 
 interface Props<T extends BaseCellData> {
   selection?: string[];

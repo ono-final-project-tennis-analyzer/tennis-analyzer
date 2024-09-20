@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { BaseCellData, TableSort } from "@/components/Table";
+import { BaseCellData, TableSort } from "../@Table.types.ts";
 
 interface Props<T extends BaseCellData> {
   defaultSort?: TableSort<T>;

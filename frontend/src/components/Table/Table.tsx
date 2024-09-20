@@ -1,5 +1,4 @@
 "use client";
-import cx from "clsx";
 import React from "react";
 import {
   Table as TableM,
@@ -17,6 +16,7 @@ import TableTop from "./components/TableTop";
 import TableHead from "./components/TableHead";
 import TableBody from "./components/TableBody";
 import useTablePagination from "./hooks/useTablePagination";
+import clsx from "clsx";
 
 export default function Table<T extends BaseCellData>({
   data,
@@ -69,7 +69,7 @@ export default function Table<T extends BaseCellData>({
   });
 
   return (
-    <div className={cx(Styles.container, className)}>
+    <div className={clsx(Styles.container, className)}>
       <TableTop
         searchValue={searchValue}
         setSearchValue={setSearchValue}
@@ -104,7 +104,7 @@ export default function Table<T extends BaseCellData>({
       </ScrollArea>
       {pageSize && paginatedData.length > 0 ? (
         <div className={Styles.pagination}>
-          <Text mb="xs" mt="xl" size={rem(14)} color="gray">
+          <Text mb="xs" mt="xl" size={rem(14)} c="gray">
             {resultsText}
           </Text>
           <Pagination

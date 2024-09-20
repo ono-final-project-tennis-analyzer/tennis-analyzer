@@ -1,4 +1,4 @@
-import { BaseCellData } from "@/components/Table";
+import { BaseCellData } from "../@Table.types.ts";
 import { useEffect, useMemo, useState } from "react";
 
 interface Props<T extends BaseCellData> {
