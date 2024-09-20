@@ -3,6 +3,7 @@ import {Button, FileButton, Group, Text} from "@mantine/core";
 import {Outlet, useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import {useUploadFileMutation} from "../../services/file.service.ts";
+import {DropzoneComponent} from "../Dashboard/Dropzone/DropzoneComponent.tsx";
 
 export const Videos = () => {
     const timer = useRef(0);
@@ -10,7 +11,9 @@ export const Videos = () => {
     const navigate = useNavigate();
     const resetRef = useRef<() => void>(null);
     const uploadFile = useUploadFileMutation((data) => {
-        navigate(`/videos/videoUpload/${data.event_id}`);
+        setTimeout(() => {
+            navigate(`/videos/videoUpload/${data.event_id}`);
+        }, 5000);
     });
 
     const uploadVideo = () => {
@@ -38,23 +41,7 @@ export const Videos = () => {
             justifyItems: "center",
 
         }}>
-            <Group justify="center">
-                <FileButton resetRef={resetRef} onChange={setFile} accept="video/avi,video/mp4">
-                    {(props) => <Button {...props}>Upload Video</Button>}
-                </FileButton>
-                <Button disabled={!file} color="red" onClick={clearFile}>
-                    Reset
-                </Button>
-                <Button color={"green"} disabled={!file} onClick={uploadVideo}>
-                    Upload
-                </Button>
-            </Group>
-            {file && (
-                <Text size="sm" ta="center" mt="sm">
-                    Picked file: {file.name}
-                </Text>
-            )}
-
+            <DropzoneComponent/>
             <Outlet/>
         </div>
     )
