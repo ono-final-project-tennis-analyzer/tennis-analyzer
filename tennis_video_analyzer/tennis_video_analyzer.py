@@ -23,9 +23,9 @@ def download_video_to_process(event_id, session):
     storage_client = StorageClient()
     event = event_store.get_event(event_id)
 
-    print(f'Downloading video for event {event_id}, file name - {event.meta["fileName"]}')
+    print(f'Downloading video for event {event_id}, file name - {event.meta["file_name"]}')
 
-    storage_client.download_file(event.account_id, event.meta['fileName'], './video/input.mp4')
+    storage_client.download_file(event.account_id, event.meta['file_name'], './video/input.mp4')
     return 'video/input.mp4'
 
 
@@ -34,9 +34,9 @@ def upload_processed_video(event_id, output_path, session):
     storage_client = StorageClient()
     event = event_store.get_event(event_id)
 
-    print(f'Uploading processed video for event {event_id}, file name - {event.meta["fileName"]}')
+    print(f'Uploading processed video for event {event_id}, file name - {event.meta["file_name"]}')
 
-    storage_client.upload_file(event.account_id, output_path, 'output-' + event.meta['fileName'])
+    storage_client.upload_file(event.account_id, output_path, 'output-' + event.meta['file_name'])
 
 
 def process_video(event_id=0, video_path=None, output_path="video/test.output.mp4", draw_ball_trace=False,
