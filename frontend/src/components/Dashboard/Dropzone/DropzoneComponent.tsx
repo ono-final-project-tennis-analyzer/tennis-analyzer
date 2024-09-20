@@ -12,6 +12,7 @@ export const DropzoneComponent = () => {
     const navigate = useNavigate();
     const uploadFile = useUploadFileMutation((data) => {
         setTimeout(() => {
+            setOpenModal(false);
             navigate(`/videos/videoUpload/${data.event_id}`);
         }, 5000);
     });
