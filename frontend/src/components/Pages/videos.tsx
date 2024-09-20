@@ -1,7 +1,5 @@
-import {Button, FileButton, Group, Text} from "@mantine/core";
-
 import {Outlet, useNavigate} from "react-router-dom";
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import {useUploadFileMutation} from "../../services/file.service.ts";
 import {DropzoneComponent} from "../Dashboard/Dropzone/DropzoneComponent.tsx";
 import Table, {TableCell, TableColumn} from "../Table";
