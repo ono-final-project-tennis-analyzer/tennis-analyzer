@@ -1,0 +1,9 @@
+{
+  "General": {
+  },
+  "Home": {
+    "title": "Welcome to the Tennis Match Analysis Platform",
+    "subtitle": "Upload your tennis match videos and get detailed analysis",
+    "description": "Welcome to the home page"
+  }
+}
