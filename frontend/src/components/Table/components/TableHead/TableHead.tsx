@@ -11,7 +11,7 @@ import {
   TableCell,
   TableColumn,
   TableSort,
-} from "@/components/Table";
+} from "../../@Table.types.ts";
 
 interface Props<T extends BaseCellData> {
   hasSelection?: boolean;
