@@ -15,6 +15,7 @@ export default function Home() {
                 <Flex direction={"column"}>
                     <Card shadow="sm" radius="md" withBorder>
                         <DropzoneComponent/>
+
                     </Card>
 
                     <Card shadow="sm" radius="md" withBorder>
