@@ -24,7 +24,7 @@ export const useLoginMutation = (onSuccess?: VoidFunction) => {
     return useMutation({
         mutationKey: ["login"],
         // @ts-ignore
-        mutationFn: async (credentials: { username: string, password: String }) => {
+        mutationFn: async (credentials: { email: string, password: String }) => {
             const response = await api.current.post("/accounts/login", credentials);
             return response.data;
         },

@@ -41,7 +41,7 @@ def handle_account(account_id):
 def login():
     data = request.get_json()
 
-    user = account_store.login(data['username'], data['password'])
+    user = account_store.login(data['email'], data['password'])
     if user:
         login_user(user)
         return jsonify({"message": "Login successful"}), 200

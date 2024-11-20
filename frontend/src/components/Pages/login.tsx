@@ -43,15 +43,24 @@ export default function Login() {
                 val.length <= 2
                     ? "Password should include at least 3 characters"
                     : null,
+            username: (val) =>
+                val.length <= 2
+                    ? "Username should include at least 3 characters"
+                    : null,
+            terms: (val) => (val ? null : "Please accept terms and conditions"),
         },
     });
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-        form.validate();
+        const validationErrors = form.validate();
+        if (Object.keys(validationErrors.errors).length > 0) {
+            // If there are validation errors, return early
+            return;
+        }
         if (type === "login") {
             try {
-                const {username, password} = form.values;
-                loginMutation.mutate({username, password});
+                const {email, password} = form.values;
+                loginMutation.mutate({email, password});
             } catch (error) {
                 console.error("Login failed:", error);
             }
@@ -75,26 +84,28 @@ export default function Login() {
                 </Text>
                 <form onSubmit={handleSubmit}>
                     <Stack>
-                        <TextInput
+                      <TextInput
                             required
                             label="Email"
                             placeholder="Your Email"
-                            value={form.values.username}
+                            value={form.values.email}
                             onChange={(event) =>
-                                form.setFieldValue("username", event.currentTarget.value)
+                                form.setFieldValue("email", event.currentTarget.value)
                             }
+                            error={form.errors.email}
                             radius="md"
                         />
+
                         {type === "register" && (
                             <TextInput
                                 required
-                                label="Email"
-                                placeholder="Enter email here"
-                                value={form.values.email}
+                                label="Username"
+                                placeholder="Enter username here"
+                                value={form.values.username}
                                 onChange={(event) =>
-                                    form.setFieldValue("email", event.currentTarget.value)
+                                    form.setFieldValue("username", event.currentTarget.value)
                                 }
-                                error={form.errors.email && "Invalid email"}
+                                error={form.errors.username && "Invalid username"}
                                 radius="md"
                             />
                         )}
@@ -129,7 +140,10 @@ export default function Login() {
                             component="button"
                             type="button"
                             c="dimmed"
-                            onClick={() => toggle()}
+                            onClick={() => {
+                                toggle();
+                                form.reset();
+                            }}
                             size="xs"
                         >
                             {type === "register"
