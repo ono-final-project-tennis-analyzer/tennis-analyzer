@@ -44,17 +44,17 @@ export default function Login() {
                     ? "Password should include at least 3 characters"
                     : null,
             username: (val) =>
-                val.length <= 2
+                val.length <= 2 && type === "register"
                     ? "Username should include at least 3 characters"
                     : null,
-            terms: (val) => (val ? null : "Please accept terms and conditions"),
+            terms: (val) => ((!val && type == "register")?  "Please accept terms and conditions":null),
         },
     });
     const handleSubmit = async (e: any) => {
         e.preventDefault();
         const validationErrors = form.validate();
         if (Object.keys(validationErrors.errors).length > 0) {
-            // If there are validation errors, return early
+            console.error(validationErrors);
             return;
         }
         if (type === "login") {
