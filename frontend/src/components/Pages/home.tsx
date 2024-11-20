@@ -1,7 +1,7 @@
-import {Card, Grid, Title, Text, Flex, List} from "@mantine/core";
+import {Card, Grid, Title, Text, List} from "@mantine/core";
 import {DropzoneComponent} from "../Dashboard/Dropzone/DropzoneComponent.tsx";
 import en from "../../../lang/en.json";
-import {BarChart, LineChart, PieChart} from "@mantine/charts";
+import {BarChart, DonutChart, LineChart, PieChart} from "@mantine/charts";
 import {mockData} from "../../MockData.ts";
 export default function Home() {
 
@@ -51,23 +51,26 @@ export default function Home() {
             </Grid.Col>
 
             <Grid.Col span={4}>
-                <Card style={{height:"100%"}} shadow="sm" radius="md" withBorder>
+                <Card style={{height:"100%" ,width:"100%"}} shadow="sm" radius="md" withBorder>
                     <Title order={4}>{mockData.AccuracyChart.title}</Title>
-                    <BarChart style={{margin:"auto"}} series={[
+                    <BarChart w={300} h={300}  style={{margin:"auto"}} series={[
                         {name: "Accuracy",
                             color: "yellow.6"}
-                    ]} h={300} dataKey={"Month"} data={mockData.AccuracyChart.data}/>
+                    ]}  dataKey={"Month"}
+                              data={mockData.AccuracyChart.data}/>
 
                 </Card>
             </Grid.Col>
             <Grid.Col span={4}>
                 <Card style={{height:"100%"}} shadow="sm" radius="md" withBorder>
-                    123
+                    <Title order={4}>{mockData.StrokeTypes.title}</Title>
+                    <PieChart w={300} h={300} data={mockData.StrokeTypes.data} withTooltip tooltipDataSource="segment" mx="auto"   withLabels />
                 </Card>
             </Grid.Col>
-                        <Grid.Col span={4}>
+            <Grid.Col span={4}>
                 <Card style={{height:"100%"}} shadow="sm" radius="md" withBorder>
-                    123
+                    <Title order={4}>{mockData.MatchOutcome.title}</Title>
+                    <DonutChart w={300} h={300}  data={mockData.MatchOutcome.data} withLabels withTooltipa />
                 </Card>
             </Grid.Col>
 

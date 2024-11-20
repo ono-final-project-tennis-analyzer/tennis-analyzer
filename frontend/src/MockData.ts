@@ -3,7 +3,6 @@ export const mockData = {
         title: "Improvement Tips",
         description: "Based on your recent performance, here are some tips to help you improve",
         data: [
-
          "Focus on your backhand technique",
             "Increase your serve speed",
             "Work on your footwork for better court coverage",
@@ -25,18 +24,18 @@ export const mockData = {
     StrokeTypes:{
         title: "Stroke Types",
         data:[
-            {type: "Forehand", count: 120},
-            {type: "Backhand", count: 80},
-            {type: "Serve", count: 50},
-            {type: "Volley", count: 30},
+            { name:"Forehand", value: 120, color: "blue"},
+            { name:"Backhand", value: 80, color: "red"},
+            { name:"Serve", value: 50, color: "green"},
+            { name:"Volley", value: 30, color: "yellow"},
         ]
     },
     MatchOutcome:{
         title: "Match Outcomes",
         data:[
-            {outcome: "Win", count: 10},
-            {outcome: "Loss", count: 5},
-            {outcome: "Draw", count: 2},
+            {name: "win", value: 10,color:"green" },
+            {name: "loss", value: 5,color: "red" },
+            {name: "draw", value: 2 ,color: "yellow"},
         ]
     },
     ServeSpeed:{
@@ -50,6 +49,4 @@ export const mockData = {
             {month: "June", speed: 125},
         ]
     }
-
-
 }
