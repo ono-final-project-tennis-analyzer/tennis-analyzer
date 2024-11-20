@@ -1,7 +1,8 @@
-import {Card, Grid, Title, Text, Flex} from "@mantine/core";
+import {Card, Grid, Title, Text, Flex, List} from "@mantine/core";
 import {DropzoneComponent} from "../Dashboard/Dropzone/DropzoneComponent.tsx";
 import en from "../../../lang/en.json";
-
+import {BarChart, LineChart, PieChart} from "@mantine/charts";
+import {mockData} from "../../MockData.ts";
 export default function Home() {
 
     return (
@@ -12,21 +13,64 @@ export default function Home() {
                 <Text>{en.Home.subtitle}</Text>
             </Grid.Col>
             <Grid.Col span={6}>
-                <Flex direction={"column"}>
+                 <Grid gutter={"md"}>
+                     <Grid.Col span={12}>
                     <Card shadow="sm" radius="md" withBorder>
                         <DropzoneComponent/>
 
                     </Card>
-
-                    <Card shadow="sm" radius="md" withBorder>
-                        PlaceHolder
+                     </Grid.Col>
+                           <Grid.Col span={12}>
+                    <Card  shadow="sm" radius="md" withBorder>
+                        <Title order={4}>{mockData.Tips.title}</Title>
+                        <Text>{mockData.Tips.description}</Text>
+                        <List>
+                        {mockData.Tips.data.map((tip, index) =>{
+                            return  <List.Item key={index}> {tip}</List.Item>
+                        } )}
+                        </List>
                     </Card>
-                </Flex>
-            </Grid.Col>
+                     </Grid.Col>
 
+
+                </Grid>
+            </Grid.Col>
             <Grid.Col span={6}>
-
+                <Card style={{ height: "100%" }} shadow="sm" radius="md" withBorder>
+                    <Title order={4}>{mockData.ServeSpeed.title}</Title>
+                      <LineChart
+                          h={300}
+                          data={mockData.ServeSpeed.data}
+                          dataKey="month"
+                          series={[
+                            { name: 'speed', color: 'indigo.6' },
+                          ]}
+                          curveType="linear"
+                    />
+                </Card>
             </Grid.Col>
+
+            <Grid.Col span={4}>
+                <Card style={{height:"100%"}} shadow="sm" radius="md" withBorder>
+                    <Title order={4}>{mockData.AccuracyChart.title}</Title>
+                    <BarChart style={{margin:"auto"}} series={[
+                        {name: "Accuracy",
+                            color: "yellow.6"}
+                    ]} h={300} dataKey={"Month"} data={mockData.AccuracyChart.data}/>
+
+                </Card>
+            </Grid.Col>
+            <Grid.Col span={4}>
+                <Card style={{height:"100%"}} shadow="sm" radius="md" withBorder>
+                    123
+                </Card>
+            </Grid.Col>
+                        <Grid.Col span={4}>
+                <Card style={{height:"100%"}} shadow="sm" radius="md" withBorder>
+                    123
+                </Card>
+            </Grid.Col>
+
         </Grid>
     );
 }
