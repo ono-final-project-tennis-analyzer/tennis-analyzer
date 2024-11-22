@@ -13,10 +13,10 @@ class VideoStore:
     def get_video_for_return(self, video):
         return {
             "id": str(video.id),
-            "account_id": video.account_id,
-            "video_path": video.video_path,
             "name": video.name,
             "upload_date": video.upload_date,
+            "status": video.status,
+
         }
     def create_video(self, account_id: int, video_path: str,name: str,event_id: int):
         upload_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -28,10 +28,9 @@ class VideoStore:
 
     def get_videos(self, account_id):
         query = session.query(Videos).filter(Videos.account_id == account_id)
-        return {
-            'videos':self.get_video_for_return(query.all()),
-            'count': session.query(Videos).filter(Videos.account_id == account_id).count()
-        }
+        videos = query.all()
+        videos = [self.get_video_for_return(video) for video in videos]
+        return [videos,query.count()]
 
     def get_video(self, video_id):
         return  self.get_video_for_return(session.query(Videos).filter(Videos.id == video_id).first())
