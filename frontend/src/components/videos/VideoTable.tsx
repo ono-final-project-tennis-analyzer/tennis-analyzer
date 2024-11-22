@@ -1,4 +1,4 @@
-import {Table} from "@mantine/core";
+import {Button, ButtonGroup, Space, Table} from "@mantine/core";
 
 export type videoRow = {
     id: string,
@@ -20,10 +20,10 @@ export const VideoTable = ({data}:VideoTableProps) => {
             <Table.Td>{row.name}</Table.Td>
             <Table.Td>{row.date}</Table.Td>
             <Table.Td>{row.status}</Table.Td>
-            <Table.Td style={{display:"flex", width:"100%"}}>
-                <button>View</button>
-                <button>Edit</button>
-                <button>Delete</button>
+            <Table.Td style={{display:"flex", width:"100%", gap:4}}>
+                    <Button>View</Button>
+                    <Button color={"yellow"}>Edit</Button>
+                    <Button color={"red"}>Delete</Button>
             </Table.Td>
 
         </Table.Tr>
