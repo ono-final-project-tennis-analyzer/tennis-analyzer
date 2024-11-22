@@ -10,3 +10,6 @@ class Videos(BaseModel):
     event_id = mapped_column(ForeignKey('events.id'))
     event = relationship('Events')
     video_path = Column(String, nullable=False)
+    name = Column(String, nullable=False)
+    upload_date = Column(String, nullable=False)
+    status = Column(Integer, nullable=False)
