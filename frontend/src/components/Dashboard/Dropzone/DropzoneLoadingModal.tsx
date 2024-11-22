@@ -3,9 +3,9 @@ import {useEffect, useRef, useState} from "react";
 
 type DropzoneLoadingModalProps = {
     opened: boolean;
-
+    setOpened: (opened: boolean) => void;
 }
-export const DropzoneLoadingModal = ({opened}: DropzoneLoadingModalProps) => {
+export const DropzoneLoadingModal = ({opened,setOpened}: DropzoneLoadingModalProps) => {
     const timer = useRef(0);
     const min = 5;
     const max = 20;
@@ -35,6 +35,7 @@ export const DropzoneLoadingModal = ({opened}: DropzoneLoadingModalProps) => {
 
     return (
         <Modal closeButtonProps={{hidden: true}} opened={opened} onClose={() => {
+            setOpened(false);
         }}>
             This is your video upload progress...
             <Progress animated value={progress}/>

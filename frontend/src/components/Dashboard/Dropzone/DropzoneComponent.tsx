@@ -66,7 +66,7 @@ export const DropzoneComponent = ({
                 </div>
             </Group>
 
-            <DropzoneLoadingModal opened={openModal}/>
+            <DropzoneLoadingModal setOpened={setOpenModal} opened={openModal}/>
         </Dropzone>
         </>
     )
