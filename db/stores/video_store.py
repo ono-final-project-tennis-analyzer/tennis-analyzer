@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy.orm import Session
-from ..models.video_model import Videos
+from ..models.videos_model import Videos
 from ..views.account_views import session
 
 
