@@ -13,3 +13,4 @@ class Videos(BaseModel):
     name = Column(String, nullable=False)
     upload_date = Column(String, nullable=False)
     status = Column(Integer, nullable=False)
+    account_id = mapped_column(ForeignKey('accounts.id'))
