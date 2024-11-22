@@ -18,9 +18,9 @@ class VideoStore:
             "name": video.name,
             "upload_date": video.upload_date,
         }
-    def create_video(self, session: Session, account_id: int, video_path: str,name: str):
+    def create_video(self, account_id: int, video_path: str,name: str,event_id: int):
         upload_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        video = Videos(account_id=account_id, video_path=video_path, name=name, upload_date=upload_date)
+        video = Videos(account_id=account_id, video_path=video_path, name=name, upload_date=upload_date, event_id=event_id)
         session.add(video)
         session.commit()
         return video

@@ -6,6 +6,7 @@ from flask import Blueprint, jsonify, request
 from celery_app.task_queue import TaskQueue, TaskItem
 from db.models import create_session
 from db.stores.events_store import EventStore
+from db.stores.video_store import VideoStore
 from storage_client import StorageClient
 from flask_login import current_user, login_required
 
@@ -52,6 +53,7 @@ def create_file():
 
         with create_session() as session:
             store = EventStore(session)
+            video_store = VideoStore(session)
             event = store.create_event(name="video_upload", account_id=str(account_id), meta=meta)
 
             task_queue.add_task(TaskItem(
@@ -60,7 +62,9 @@ def create_file():
                 type="Analyze",
                 meta=meta
             ))
+            video_store.create_video(event_id=event.id,video_path=temp_file_path, name=file_name, account_id=account_id)
             os.remove(temp_file_path)
+
             return jsonify({"status": "True", "event_id": event.id}), 200
     except Exception as e:
         print(f"Error occurred: {e}")
