@@ -3,7 +3,6 @@ import uuid
 
 from flask import Blueprint, jsonify, request
 
-from celery_app.task_queue import TaskQueue, TaskItem
 from celery_app.tasks import process_video_task
 from db.models import create_session
 from db.stores.events_store import EventStore
@@ -34,7 +33,6 @@ def create_file():
             return jsonify({"error": "Invalid file type"}), 400
 
         storage = StorageClient()
-        task_queue = TaskQueue()
 
         file_buffer = file.read()
         file_name = f"{uuid.uuid4()}.{file_type}"

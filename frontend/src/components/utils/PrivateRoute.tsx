@@ -1,4 +1,4 @@
-import { useMeQuery } from "../../services/accounts.service.ts";
+import { useMeQuery } from "@/services/accounts.service.ts";
 import React, { useEffect } from "react";
 
 export const PrivateRoute: React.FC<React.PropsWithChildren> = ({
