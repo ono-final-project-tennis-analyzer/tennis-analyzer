@@ -1,4 +1,4 @@
-import { BaseCellData } from "../@Table.types.ts";
+import { BaseCellData } from "../@Table.types";
 import { useEffect, useMemo, useState } from "react";
 
 interface Props<T extends BaseCellData> {
@@ -28,7 +28,7 @@ export default function useTablePagination<T extends BaseCellData>({
       pageCount,
       resultsText,
     };
-  }, [data, page, pageSize]);
+  }, [JSON.stringify(data), page, pageSize]);
 
   useEffect(() => {
     if (page > paginatedData.pageCount && paginatedData.pageCount > 0) {

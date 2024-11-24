@@ -3,3 +3,6 @@ minio-data
 redis-data
 mongo-data
 postgres-data
+pgadmin-data
+flower-data
+.env.celery

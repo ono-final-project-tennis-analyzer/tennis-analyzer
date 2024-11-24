@@ -1,1 +1,1 @@
-from celery_app.tasks.read_task import read_task
+from celery_app.tasks.process_video_task import process_video_task

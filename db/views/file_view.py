@@ -4,6 +4,7 @@ import uuid
 from flask import Blueprint, jsonify, request
 
 from celery_app.task_queue import TaskQueue, TaskItem
+from celery_app.tasks import process_video_task
 from db.models import create_session
 from db.stores.events_store import EventStore
 from db.stores.video_store import VideoStore
@@ -46,24 +47,21 @@ def create_file():
 
         storage.upload_file(account_id=str(account_id), file_name=file_name, file_path=temp_file_path)
 
-        meta = {
-            "file_name": file_name,
-            "account_id": str(account_id),
-        }
-
         with create_session() as session:
+            meta = {
+                "file_name": file_name,
+                "account_id": str(account_id),
+            }
+
             store = EventStore(session)
             video_store = VideoStore(session)
             event = store.create_event(name="video_upload", account_id=str(account_id), meta=meta)
-
-            task_queue.add_task(TaskItem(
-                event_id=event.id,
-                name="video_task",
-                type="Analyze",
-                meta=meta
-            ))
-            video_store.create_video(event_id=event.id,video_path=temp_file_path, name=file_name, account_id=account_id)
+            video_store.create_video(event_id=event.id,video_path=temp_file_path, name=file.filename, account_id=account_id)
             os.remove(temp_file_path)
+
+            meta['event_id'] = event.id
+
+            process_video_task.apply_async(args=[meta])
 
             return jsonify({"status": "True", "event_id": event.id}), 200
     except Exception as e:

@@ -1,0 +1,21 @@
+.pagination {
+  & button {
+    transform: none !important;
+    transition: 0.3s all ease-in-out;
+
+    &[data-active="true"] {
+      background: var(--color-background-brand-default);
+      color: var(--color-white-1000);
+      border: 0;
+    }
+  }
+
+  & [data-type="previous"],
+  & [data-type="next"] {
+    border: unset;
+  }
+}
+
+.text {
+  color: var(--color-text-brand-default);
+}

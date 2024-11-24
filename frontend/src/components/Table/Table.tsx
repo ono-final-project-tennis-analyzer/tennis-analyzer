@@ -1,12 +1,6 @@
-"use client";
+import cx from "clsx";
 import React from "react";
-import {
-  Table as TableM,
-  ScrollArea,
-  Pagination,
-  Text,
-  rem,
-} from "@mantine/core";
+import { Table as TableM, ScrollArea } from "@mantine/core";
 import Styles from "./Table.styles.module.css";
 import { BaseCellData, TableProps } from "./@Table.types";
 import useTableSort from "./hooks/useTableSort";
@@ -16,7 +10,7 @@ import TableTop from "./components/TableTop";
 import TableHead from "./components/TableHead";
 import TableBody from "./components/TableBody";
 import useTablePagination from "./hooks/useTablePagination";
-import clsx from "clsx";
+import TablePagination from "./components/TablePagaintion";
 
 export default function Table<T extends BaseCellData>({
   data,
@@ -69,7 +63,7 @@ export default function Table<T extends BaseCellData>({
   });
 
   return (
-    <div className={clsx(Styles.container, className)}>
+    <div className={cx(Styles.container, className)}>
       <TableTop
         searchValue={searchValue}
         setSearchValue={setSearchValue}
@@ -103,21 +97,14 @@ export default function Table<T extends BaseCellData>({
         </TableM>
       </ScrollArea>
       {pageSize && paginatedData.length > 0 ? (
-        <div className={Styles.pagination}>
-          <Text mb="xs" mt="xl" size={rem(14)} c="gray">
-            {resultsText}
-          </Text>
-          <Pagination
-            total={pageCount}
-            siblings={3}
-            value={currentPage}
-            onNextPage={nextPage}
-            onPreviousPage={prevPage}
-            onFirstPage={() => updatePage(1)}
-            onLastPage={() => updatePage(pageCount)}
-            onChange={updatePage}
-          />
-        </div>
+        <TablePagination
+          pageCount={pageCount}
+          currentPage={currentPage}
+          resultsText={resultsText}
+          updatePage={updatePage}
+          prevPage={prevPage}
+          nextPage={nextPage}
+        />
       ) : null}
     </div>
   );

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { BaseCellData, TableSort } from "../@Table.types.ts";
+import { BaseCellData, TableSort } from "../@Table.types";
 
 interface Props<T extends BaseCellData> {
   defaultSort?: TableSort<T>;
@@ -45,11 +45,14 @@ export default function useTableSort<T extends BaseCellData>({
           : Number(item2[sortKey]) - Number(item1[sortKey]);
       }
 
-      if (String(item1[sortKey]) > item2[sortKey])
-        return sort.direction === "ascending" ? 1 : -1;
-      if (String(item1[sortKey]) < item2[sortKey])
-        return sort.direction === "ascending" ? -1 : 1;
-      return 0;
+      const stringValue1 = String(item1[sortKey]);
+      const stringValue2 = String(item2[sortKey]);
+
+      if (sort.direction === "ascending") {
+        return stringValue1.localeCompare(stringValue2);
+      }
+
+      return stringValue2.localeCompare(stringValue1);
     });
   }, [sort, data]);
 

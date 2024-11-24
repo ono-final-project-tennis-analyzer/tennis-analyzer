@@ -40,18 +40,23 @@ class BallTracker:
         video.set(cv2.CAP_PROP_POS_FRAMES, 0)
         return frames
 
-    def infer_model(self, video):
-        """ Run pretrained model on a consecutive list of frames
-        :params
-            video: cv2 video object
-        :return
-            ball_track: list of detected ball points
+    def infer_model(self, video, progress_tracker=None, stage="analyzing", start_progress=0, weight=50):
+        """
+        Run the pretrained model on a consecutive list of frames.
+        :param video: cv2.VideoCapture object
+        :param progress_tracker: VideoAnalyzerProgressTracker instance (optional)
+        :param stage: Current stage name for progress tracker
+        :param start_progress: Starting progress percentage for this stage
+        :param weight: Proportional weight of this stage in overall progress
+        :return: List of detected ball points
         """
         frames = self.prep_frames(video)
 
         ball_track = [(None, None)] * 2
         prev_pred = [None, None]
-        for num in tqdm(range(2, len(frames))):
+        total_frames = len(frames)
+
+        for num in tqdm(range(2, total_frames), desc="Tracking Ball"):
             img = cv2.resize(frames[num], (self.width, self.height))
             img_prev = cv2.resize(frames[num - 1], (self.width, self.height))
             img_preprev = cv2.resize(frames[num - 2], (self.width, self.height))
@@ -65,6 +70,12 @@ class BallTracker:
             x_pred, y_pred = self.postprocess(output, prev_pred)
             prev_pred = [x_pred, y_pred]
             ball_track.append((x_pred, y_pred))
+
+            # Increment progress tracker
+            if progress_tracker:
+                current_progress = start_progress + (num / total_frames) * weight
+                progress_tracker.update_progress(current_progress, stage=stage)
+
         return ball_track
 
     def postprocess(self, feature_map, prev_pred, scale=2, max_dist=80):

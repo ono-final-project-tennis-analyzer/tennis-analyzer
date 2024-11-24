@@ -1,37 +1,42 @@
-import axios, {AxiosInstance} from "axios";
+// src/services/Api.ts
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 // @ts-ignore
 import cookie from "cookie";
 
 export default class Api {
-    private client: AxiosInstance;
+  public static BASE_URL = "http://localhost:8081";
 
-    constructor(userId?: string) {
-        this.client = axios.create();
-        this.client.defaults.baseURL = "http://localhost:8081";
-        this.client.defaults.headers.common["Content-Type"] = "application/json";
-        this.client.defaults.headers.common["UserId"] = userId;
-        this.client.defaults.withCredentials = true;
-    }
+  private client: AxiosInstance;
 
-    // @ts-ignore
-    private getSession() {
-        const cookies = cookie.parse(document.cookie);
-        return cookies["session"];
+  constructor(userId?: string) {
+    this.client = axios.create();
+    this.client.defaults.baseURL = "http://localhost:8081";
+    this.client.defaults.headers.common["Content-Type"] = "application/json";
+    if (userId) {
+      this.client.defaults.headers.common["UserId"] = userId;
     }
+    this.client.defaults.withCredentials = true;
+  }
 
-    get<T = any>(url: string, config?: any) {
-        return this.client.get<T>(url, config);
-    }
+  // @ts-ignore
+  private getSession() {
+    const cookies = cookie.parse(document.cookie);
+    return cookies["session"];
+  }
 
-    post(url: string, data?: any, config?: any) {
-        return this.client.post(url, data, config);
-    }
+  get<T = any>(url: string, config?: any): Promise<AxiosResponse<T>> {
+    return this.client.get<T>(url, config);
+  }
 
-    put(url: string, data?: any, config?: any) {
-        return this.client.put(url, data, config);
-    }
+  post(url: string, data?: any, config?: any): Promise<AxiosResponse<any>> {
+    return this.client.post(url, data, config);
+  }
 
-    delete(url: string, config?: any) {
-        return this.client.delete(url, config);
-    }
+  put(url: string, data?: any, config?: any): Promise<AxiosResponse<any>> {
+    return this.client.put(url, data, config);
+  }
+
+  delete(url: string, config?: any): Promise<AxiosResponse<any>> {
+    return this.client.delete(url, config);
+  }
 }

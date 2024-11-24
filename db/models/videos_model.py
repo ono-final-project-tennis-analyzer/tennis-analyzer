@@ -8,9 +8,11 @@ class Videos(BaseModel):
     __tablename__ = 'videos'
     id = Column(Integer, primary_key=True, autoincrement=True)
     event_id = mapped_column(ForeignKey('events.id'))
-    event = relationship('Events')
     video_path = Column(String, nullable=False)
+    processed_video_path = Column(String, nullable=True, default=None)
     name = Column(String, nullable=False)
     upload_date = Column(String, nullable=False)
     status = Column(Integer, nullable=False)
+
+    event = relationship('Events')
     account_id = mapped_column(ForeignKey('accounts.id'))

@@ -1,0 +1,16 @@
+# Ignore artifacts:
+build
+coverage
+vitest.config.mts
+next.config.mjs
+.next
+node_modules
+public
+
+**/*.html
+**/*.md
+**/*.yaml
+**/*.yml
+**/*.json
+/src/app/onboard/components/AffiliatoIconRounded.tsx
+/src/components/Authenticated/Authenticated.tsx

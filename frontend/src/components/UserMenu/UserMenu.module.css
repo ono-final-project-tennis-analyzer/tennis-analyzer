@@ -1,0 +1,20 @@
+.info {
+  padding: 4px 8px;
+}
+
+.info p {
+  font-weight: bold;
+}
+
+.avatar {
+  box-shadow: 0 0 0 0 white;
+  transition: 0.3s all ease-in-out;
+  cursor: pointer;
+}
+
+.avatar:hover,
+.avatar:focus,
+.avatar:active,
+.avatar.open {
+  box-shadow: 0 0 2px 2px #ccc;
+}

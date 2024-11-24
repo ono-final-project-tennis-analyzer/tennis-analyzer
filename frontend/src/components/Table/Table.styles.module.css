@@ -12,7 +12,7 @@
 
 .tableContainer {
   border: 1px solid var(--mantine-color-gray-3);
-  border-radius: 4px;
+  border-radius: var(--size-radius-200);
 }
 
 .head {
@@ -26,16 +26,4 @@
   position: relative;
   top: 3px;
   cursor: pointer;
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.pagination button {
-  transform: none !important;
-  transition: 0.3s all ease-in-out;
 }

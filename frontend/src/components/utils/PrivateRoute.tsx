@@ -1,12 +1,17 @@
-import {Navigate} from "react-router-dom";
-import {useMeQuery} from "../../services/accounts.service.ts";
-import React from "react";
+import { useMeQuery } from "../../services/accounts.service.ts";
+import React, { useEffect } from "react";
 
-export const PrivateRoute: React.FC<React.PropsWithChildren> = ({children}) => {
-    const {isLoading, isError} = useMeQuery();
+export const PrivateRoute: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
+  const { isLoading, isError } = useMeQuery();
 
-    if (isLoading) return <div>Loading...</div>
-    if (isError) return <Navigate to="/login"/>;
+  useEffect(() => {
+    if (isError) {
+      window.location.href = "/login";
+    }
+  }, [isError]);
 
-    return children;
+  if (isLoading) return <div>Loading...</div>;
+  return !isError ? children : null;
 };

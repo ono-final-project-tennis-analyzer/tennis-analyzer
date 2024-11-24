@@ -7,7 +7,7 @@ import {
     Button,
     Checkbox,
     Anchor,
-    Stack, Flex, Grid,
+    Stack,
 } from "@mantine/core";
 import {useToggle, upperFirst} from "@mantine/hooks";
 import {useForm} from "@mantine/form";

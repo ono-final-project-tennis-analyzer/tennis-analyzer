@@ -41,3 +41,11 @@ export interface TableSort<T extends BaseCellData> {
   sortBy: "" | keyof T;
   direction: "" | "ascending" | "descending";
 }
+
+export interface RowActionItem<T extends BaseCellData> {
+  label: string;
+  icon: React.ReactNode;
+  onClick: (cell: TableCell<T>) => void;
+  color?: string;
+  danger?: boolean;
+}

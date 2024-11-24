@@ -53,14 +53,14 @@ class StorageClient:
             return f"Failed to delete file '{file_name}': {err}"
 
     def stream_file(self, account_id: str, file_name: str):
-        response = None
-
         try:
             object_name = f"{account_id}/{file_name}"
-            response = self.client.get_object(MINIO_BUCKET_NAME, object_name)
-            return response
+            return self.client.get_object(MINIO_BUCKET_NAME, object_name)
         except S3Error as err:
-            return f"Failed to stream file '{file_name}': {err}"
-        finally:
-            response.close()
-            response.release_conn()
+            raise Exception(f"Failed to stream file '{file_name}': {err}")
+
+    def stream_file_by_path(self, object_name: str):
+        try:
+            return self.client.get_object(MINIO_BUCKET_NAME, object_name)
+        except S3Error as err:
+            raise Exception(f"Failed to stream file '{object_name}': {err}")

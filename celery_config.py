@@ -1,16 +1,12 @@
 # celery/celery_config.py
 from celery import Celery
+from config import REDIS_BROKER_URL
 
 # Initialize Celery
-app = Celery('tasks', broker='redis://localhost:6379/0')
+app = Celery('tasks', broker=REDIS_BROKER_URL)
 
 # Celery configuration
-app.conf.beat_schedule = {
-    'read_task-every-1-minute': {
-        'task': 'celery_app.tasks.read_task',
-        'schedule': 60,
-    },
-}
+app.conf.beat_schedule = {}
 
 app.conf.timezone = 'UTC'
 
