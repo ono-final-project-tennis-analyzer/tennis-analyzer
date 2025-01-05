@@ -6,6 +6,7 @@ from ball_detector.ball_tracker import BallTracker
 from court_detector.court_detection_computer_vision import CourtDetectorComputerVision
 from db.stores.events_store import EventStore
 from player_detector.player_detection import PlayerDetector
+from ball_bounce_detactor.ball_bounce_detactor import BallBounceDetector
 from storage_client import StorageClient
 from utils.video_utils import get_video_properties
 
@@ -46,32 +47,37 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
         progress_tracker = VideoAnalyzerProgressTracker(session, total_frames=100, event_id=event_id)
 
         # Stage 1: Downloading the video
-        progress_tracker.update_progress(0, stage="downloading")
+        progress_tracker.update_progress(0, stage="Downloading Video")
         if not video_path:
             video_path = download_video_to_process(event_id, session)
-        progress_tracker.update_progress(100, stage="downloading")
+        progress_tracker.update_progress(100, stage="Downloading Video")
 
-        # Stage 2: Detecting Court
-        progress_tracker.update_progress(0, stage="detecting_court")
+        # Stage 2: Init models
+        progress_tracker.update_progress(0, stage="Initializing Models")
         court_detector = CourtDetectorComputerVision(verbose=False)
         player_detector = PlayerDetector(device)
         ball_tracker = BallTracker(device)
-        progress_tracker.update_progress(100, stage="detecting_court")
+        ball_bounce_detector = BallBounceDetector()
+        progress_tracker.update_progress(100, stage="Initializing Models")
 
-        # Stage 3: Tracking the Ball
-        progress_tracker.update_progress(0, stage="tracking_ball")
+        # Stage 3: Tracking the Ball and ball detection
+        progress_tracker.update_progress(0, stage="Tracking Ball")
         video = cv2.VideoCapture(video_path)
-        ball_track = ball_tracker.infer_model(
+        ball_tracker.infer_model(
             video,
             progress_tracker=progress_tracker,
-            stage="tracking_ball",
+            stage="Tracking Ball",
             start_progress=0,
             weight=50  # Tracking the ball is 50% of progress
         )
-        progress_tracker.update_progress(100, stage="tracking_ball")
+        all_x_ball = [track[0] for track in ball_tracker.ball_tracking if track[0] is not None]
+        all_y_ball = [track[1] for track in ball_tracker.ball_tracking if track[1] is not None]
+        ball_bounce_detector.predict(all_x_ball, all_y_ball)
+        print(ball_bounce_detector.bounces)
+        progress_tracker.update_progress(100, stage="Tracking Ball")
 
         # Stage 4: Processing Frames
-        progress_tracker.update_progress(0, stage="processing_frames")
+        progress_tracker.update_progress(0, stage="Processing Video")
         fps, length, width, height = get_video_properties(video)
         fourcc = cv2.VideoWriter.fourcc(*'mp4v')
         out_video = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
@@ -90,7 +96,7 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
 
             # Update progress for frame processing
             progress_tracker.update_progress(
-                frame_counter, length, stage="processing_frames"
+                frame_counter, length, stage="Processing Video"
             )
 
             if frame_counter == 1 or need_court_detection:
@@ -125,18 +131,18 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
                     pass
 
                 try:
-                    if ball_track[frame_counter][0]:
+                    if ball_tracker.ball_tracking[frame_counter][0]:
                         if draw_ball_trace:
                             for j in range(ball_trace_length):
                                 idx = frame_counter - j
-                                if idx >= 0 and ball_track[idx][0]:
-                                    draw_x = int(ball_track[idx][0])
-                                    draw_y = int(ball_track[idx][1])
+                                if idx >= 0 and ball_tracker.ball_tracking[idx][0]:
+                                    draw_x = int(ball_tracker.ball_tracking[idx][0])
+                                    draw_y = int(ball_tracker.ball_tracking[idx][1])
                                     clone_frame = cv2.circle(clone_frame, (draw_x, draw_y),
                                                              radius=3, color=(0, 255, 0), thickness=2)
                         else:
-                            draw_x = int(ball_track[frame_counter][0])
-                            draw_y = int(ball_track[frame_counter][1])
+                            draw_x = int(ball_tracker.ball_tracking[frame_counter][0])
+                            draw_y = int(ball_tracker.ball_tracking[frame_counter][1])
                             clone_frame = cv2.circle(clone_frame, (draw_x, draw_y),
                                                      radius=5, color=(0, 255, 0), thickness=2)
                             clone_frame = cv2.putText(clone_frame, 'ball',
@@ -153,13 +159,13 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
         video.release()
         out_video.release()
         cv2.destroyAllWindows()
-        progress_tracker.update_progress(100, stage="processing_frames")
+        progress_tracker.update_progress(100, stage="Processing Video")
 
         # Stage 5: Uploading Processed Video
         if event_id:
-            progress_tracker.update_progress(0, stage="uploading")
+            progress_tracker.update_progress(0, stage="Uploading Video")
             upload_processed_video(event_id, output_path, session)
-            progress_tracker.update_progress(100, stage="uploading")
+            progress_tracker.update_progress(100, stage="Uploading Video")
 
         print('Processing completed')
         print(f'New video created, file name - {output_path}')

@@ -20,6 +20,7 @@ class BallTracker:
         self.width = 640
         self.height = 360
         self.frames = []
+        self.ball_tracking = [(None, None)] * 2
 
     def prep_frames(self, video):
         """ Prepare frames for inference
@@ -52,7 +53,7 @@ class BallTracker:
         """
         frames = self.prep_frames(video)
 
-        ball_track = [(None, None)] * 2
+        self.ball_tracking = [(None, None)] * 2
         prev_pred = [None, None]
         total_frames = len(frames)
 
@@ -69,14 +70,12 @@ class BallTracker:
             output = out.argmax(dim=1).detach().cpu().numpy()
             x_pred, y_pred = self.postprocess(output, prev_pred)
             prev_pred = [x_pred, y_pred]
-            ball_track.append((x_pred, y_pred))
+            self.ball_tracking.append((x_pred, y_pred))
 
             # Increment progress tracker
             if progress_tracker:
                 current_progress = start_progress + (num / total_frames) * weight
                 progress_tracker.update_progress(current_progress, stage=stage)
-
-        return ball_track
 
     def postprocess(self, feature_map, prev_pred, scale=2, max_dist=80):
         """
