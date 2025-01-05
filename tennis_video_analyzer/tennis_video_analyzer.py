@@ -158,25 +158,28 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
         progress_tracker.update_progress(100, stage="processing_frames")
 
         # Stage 5: Uploading Processed Video
-        progress_tracker.update_progress(0, stage="uploading")
-        upload_processed_video(event_id, output_path, session)
-        progress_tracker.update_progress(100, stage="uploading")
+        if event_id:
+            progress_tracker.update_progress(0, stage="uploading")
+            upload_processed_video(event_id, output_path, session)
+            progress_tracker.update_progress(100, stage="uploading")
 
         print('Processing completed')
         print(f'New video created, file name - {output_path}')
 
 
-# if __name__ == '__main__':
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument('--video_path', type=str, help='path to input video', default="video/test_short.mp4")
-#     parser.add_argument('--video_out_path', type=str, help='path to output video', default="video/test.output.mp4")
-#     args = parser.parse_args()
-#
-#     with with_session() as session:
-#         store = EventStore(session)
-#         created_event = store.create_event("read_task_test", "1", {
-#             "account_id": "1",
-#             "fileName": "input.mp4",
-#         })
-#
-#         upload_processed_video(event_id=created_event.id, output_path="video/input.mp4", session=session)
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--video_path', type=str, help='path to input video', default="video/test.mp4")
+    parser.add_argument('--video_out_path', type=str, help='path to output video', default="video/test.output.mp4")
+    args = parser.parse_args()
+
+    # with with_session() as session:
+    #     store = EventStore(session)
+    #     created_event = store.create_event("read_task_test", "1", {
+    #         "account_id": "1",
+    #         "fileName": "input.mp4",
+    #     })
+    #
+    #     upload_processed_video(event_id=created_event.id, output_path="video/input.mp4", session=session)
+    # test process video
+    process_video(video_path=args.video_path, output_path=args.video_out_path)
