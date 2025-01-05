@@ -5,17 +5,18 @@ import numpy as np
 from scipy.spatial import distance
 from torchvision.models.detection import FasterRCNN_ResNet50_FPN_Weights
 from torchvision.models.detection import FasterRCNN_MobileNet_V3_Large_FPN_Weights
+from tqdm import tqdm
 
 from court_detector.court_reference import CourtReference
 
 
 class PlayerDetector:
     def __init__(self, dtype=torch.FloatTensor):
-        # weights = FasterRCNN_ResNet50_FPN_Weights.COCO_V1
-        # self.detection_model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights=weights)
+        weights = FasterRCNN_ResNet50_FPN_Weights.COCO_V1
+        self.detection_model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights=weights)
 
-        weights = FasterRCNN_MobileNet_V3_Large_FPN_Weights.COCO_V1
-        self.detection_model = torchvision.models.detection.fasterrcnn_mobilenet_v3_large_fpn(weights=weights)
+        # weights = FasterRCNN_MobileNet_V3_Large_FPN_Weights.COCO_V1
+        # self.detection_model = torchvision.models.detection.fasterrcnn_mobilenet_v3_large_fpn(weights=weights)
         self.detection_model = self.detection_model.to(dtype)
         self.detection_model.eval()
         self.dtype = dtype
@@ -28,6 +29,8 @@ class PlayerDetector:
         self.counter_bottom = 0
         self.player_bboxes_top = []
         self.player_bboxes_bottom = []
+        self.persons_top = []
+        self.persons_bottom = []
 
     def detect(self, frame, person_min_score=0.85):
         PERSON_LABEL = 1
@@ -37,13 +40,13 @@ class PlayerDetector:
         with torch.no_grad():
             preds = self.detection_model(frame_tensor)
 
-        persons_boxes = []
-        probs = []
-        for box, label, score in zip(preds[0]['boxes'][:], preds[0]['labels'], preds[0]['scores']):
-            if label == PERSON_LABEL and score > person_min_score:
-                persons_boxes.append(box.detach().cpu().numpy())
-                probs.append(score.detach().cpu().numpy())
-        return persons_boxes, probs
+            persons_boxes = []
+            probs = []
+            for box, label, score in zip(preds[0]['boxes'][:], preds[0]['labels'], preds[0]['scores']):
+                if label == PERSON_LABEL and score > person_min_score:
+                    persons_boxes.append(box.detach().cpu().numpy())
+                    probs.append(score.detach().cpu().numpy())
+            return persons_boxes, probs
 
     def detect_top_and_bottom_players(self, frame, matrix, filter_players=False):
         mask_top_court = cv2.warpPerspective(self.ref_top_court, matrix, frame.shape[1::-1])
@@ -81,23 +84,17 @@ class PlayerDetector:
             person_bboxes_bottom = [person_bboxes_bottom[ind]]
         return person_bboxes_top, person_bboxes_bottom
 
-    # def track_players(self, frames, matrix_all, filter_players=False):
-    #     persons_top = []
-    #     persons_bottom = []
-    #     min_len = min(len(frames), len(matrix_all))
-    #     for num_frame in tqdm(range(min_len)):
-    #         img = frames[num_frame]
-    #         if matrix_all[num_frame] is not None:
-    #             inv_matrix = matrix_all[num_frame]
-    #             person_top, person_bottom = self.detect_top_and_bottom_players(img, inv_matrix, filter_players)
-    #         else:
-    #             person_top, person_bottom = [], []
-    #         persons_top.append(person_top)
-    #         persons_bottom.append(person_bottom)
-    #
-    #     self.persons_top = persons_top
-    #     self.persons_bottom = persons_bottom
-    #     return persons_top, persons_bottom
+    def track_players(self, frames, matrix_all, filter_players=False):
+        min_len = min(len(frames), len(matrix_all))
+        for num_frame in tqdm(range(min_len)):
+            img = frames[num_frame]
+            if matrix_all[num_frame] is not None:
+                inv_matrix = matrix_all[num_frame]
+                person_top, person_bottom = self.detect_top_and_bottom_players(img, inv_matrix, filter_players)
+            else:
+                person_top, person_bottom = [], []
+            self.persons_top.append(person_top)
+            self.persons_bottom.append(person_bottom)
 
     def draw_player_boxes_over_frame(self, frame):
         persons = self.player_bboxes_top + self.player_bboxes_bottom

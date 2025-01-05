@@ -1,12 +1,10 @@
 import argparse
 import cv2
-import time
 import torch
 from db.models import with_session
 from ball_detector.ball_tracker import BallTracker
 from court_detector.court_detection_computer_vision import CourtDetectorComputerVision
 from db.stores.events_store import EventStore
-from db.stores.video_store import VideoStore
 from player_detector.player_detection import PlayerDetector
 from storage_client import StorageClient
 from utils.video_utils import get_video_properties
@@ -121,7 +119,7 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
 
                 try:
                     player_detector.detect_top_and_bottom_players(clone_frame,
-                                                                  court_detector.court_warp_matrix[-1])
+                                                                  court_detector.court_warp_matrix[-1], True)
                     clone_frame = player_detector.draw_player_boxes_over_frame(clone_frame)
                 except Exception:
                     pass
@@ -169,7 +167,7 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--video_path', type=str, help='path to input video', default="video/test.mp4")
+    parser.add_argument('--video_path', type=str, help='path to input video', default="video/test-short.mp4")
     parser.add_argument('--video_out_path', type=str, help='path to output video', default="video/test.output.mp4")
     args = parser.parse_args()
 
