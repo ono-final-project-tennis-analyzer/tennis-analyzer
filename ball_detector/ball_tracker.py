@@ -12,8 +12,10 @@ class BallTracker:
     def __init__(self, device='cuda'):
         self.model = BallTrackerNet(input_channels=9, out_channels=256)
         self.device = device
+
         current_dir = os.path.dirname(os.path.realpath(__file__))
         path_model = os.path.join(current_dir, 'tracknet-weights.pt')
+
         self.model.load_state_dict(torch.load(path_model, map_location=device))
         self.model = self.model.to(device)
         self.model.eval()

@@ -1,4 +1,5 @@
 import cv2
+import torch
 
 
 def get_video_properties(video):
@@ -17,3 +18,25 @@ def get_video_properties(video):
         v_width = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
         v_height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
     return fps, length, v_width, v_height
+
+
+def get_dtype():
+    dev = 'cuda' if torch.cuda.is_available() else 'cpu'
+    device = torch.device(dev)
+    if dev == 'cuda':
+        dtype = torch.cuda.FloatTensor
+    else:
+        dtype = torch.FloatTensor
+    print(f'Using device {device}')
+    return dtype
+
+
+def center_of_box(box):
+    """
+    Calculate the center of a box
+    """
+    if box[0] is None:
+        return None, None
+    height = box[3] - box[1]
+    width = box[2] - box[0]
+    return box[0] + width / 2, box[1] + height / 2

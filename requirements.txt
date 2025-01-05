@@ -26,6 +26,7 @@ fonttools==4.50.0
 fsspec==2024.6.1
 graphviz==0.20.3
 humanize==4.11.0
+imutils==0.5.4
 itsdangerous==2.2.0
 Jinja2==3.1.4
 kiwisolver==1.4.5
