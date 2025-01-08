@@ -27,10 +27,10 @@ class PlayerDetector:
         self.point_person_bottom = None
         self.counter_top = 0
         self.counter_bottom = 0
-        self.player_bboxes_top = []
-        self.player_bboxes_bottom = []
-        self.persons_top = []
-        self.persons_bottom = []
+        self.player_bboxes_top_last_frame = []
+        self.player_bboxes_bottom_last_frame = []
+        self.top_player_boxes = []
+        self.bottom_player_boxes = []
 
     def detect(self, frame, person_min_score=0.85):
         PERSON_LABEL = 1
@@ -65,8 +65,11 @@ class PlayerDetector:
                 player_bboxes_top, person_bboxes_bottom = self.filter_players(player_bboxes_top, person_bboxes_bottom,
                                                                               matrix)
 
-        self.player_bboxes_top = player_bboxes_top
-        self.player_bboxes_bottom = person_bboxes_bottom
+        self.player_bboxes_top_last_frame = player_bboxes_top
+        self.player_bboxes_bottom_last_frame = person_bboxes_bottom
+
+        self.top_player_boxes.append(player_bboxes_top[0])
+        self.bottom_player_boxes.append(person_bboxes_bottom[0])
         return player_bboxes_top, person_bboxes_bottom
 
     def filter_players(self, person_bboxes_top, person_bboxes_bottom, matrix):
@@ -84,20 +87,8 @@ class PlayerDetector:
             person_bboxes_bottom = [person_bboxes_bottom[ind]]
         return person_bboxes_top, person_bboxes_bottom
 
-    def track_players(self, frames, matrix_all, filter_players=False):
-        min_len = min(len(frames), len(matrix_all))
-        for num_frame in tqdm(range(min_len)):
-            img = frames[num_frame]
-            if matrix_all[num_frame] is not None:
-                inv_matrix = matrix_all[num_frame]
-                person_top, person_bottom = self.detect_top_and_bottom_players(img, inv_matrix, filter_players)
-            else:
-                person_top, person_bottom = [], []
-            self.persons_top.append(person_top)
-            self.persons_bottom.append(person_bottom)
-
     def draw_player_boxes_over_frame(self, frame):
-        persons = self.player_bboxes_top + self.player_bboxes_bottom
+        persons = self.player_bboxes_top_last_frame + self.player_bboxes_bottom_last_frame
         for j, person in enumerate(persons):
             if len(person[0]) > 0:
                 player_bbox = list(person[0])

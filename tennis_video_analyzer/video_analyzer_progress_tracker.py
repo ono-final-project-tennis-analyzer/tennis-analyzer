@@ -33,7 +33,7 @@ class VideoAnalyzerProgressTracker:
         max_value = max_value or self.total_frames
         progress = int(self._calculate_progress(stage, current_value, max_value))
 
-        print(f"Stage: {stage.capitalize().replace('_', ' ')}, Progress: {progress}%")
+        print(f"\nStage: {stage.capitalize().replace('_', ' ')}, Progress: {progress}%")
 
         if self.event_id:
             self.events_store.update_event(self.event_id, progress=progress, stage=stage)

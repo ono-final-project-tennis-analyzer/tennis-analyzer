@@ -6,6 +6,7 @@ import torchvision
 import numpy as np
 from torchvision import transforms
 import torch.nn as nn
+from torchvision.models import Inception_V3_Weights
 
 from utils.video_utils import center_of_box
 from utils.video_utils import get_dtype
@@ -22,7 +23,7 @@ class Identity(nn.Module):
 class FeatureExtractor(nn.Module):
     def __init__(self):
         super().__init__()
-        self.feature_extractor = torchvision.models.inception_v3(pretrained=True)
+        self.feature_extractor = torchvision.models.inception_v3(weights=Inception_V3_Weights.IMAGENET1K_V1)
         self.feature_extractor.fc = Identity()
 
     def forward(self, x):
@@ -61,9 +62,9 @@ class LSTM_model(nn.Module):
                 torch.zeros(self.num_layers, batch_size, self.hidden_size).type(self.dtype))
 
 
-class ActionRecognition:
+class StrokeDetector:
     """
-    Stroke recognition model
+    Stroke detector model
     """
 
     def __init__(self, device='cuda', max_seq_len=55):
@@ -102,6 +103,7 @@ class ActionRecognition:
         frame_t = patch.transpose((2, 0, 1)) / 255
         frame_tensor = torch.from_numpy(frame_t).type(self.dtype)
         frame_tensor = self.normalize(frame_tensor).unsqueeze(0)
+
         with torch.no_grad():
             # forward pass
             features = self.feature_extractor(frame_tensor)
@@ -122,5 +124,5 @@ class ActionRecognition:
 
         if clear:
             self.frames_features_seq = None
-            
+
         return probs, self.strokes_label[np.argmax(probs)]

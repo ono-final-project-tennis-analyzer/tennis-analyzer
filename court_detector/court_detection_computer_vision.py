@@ -518,6 +518,13 @@ class CourtDetectorComputerVision:
         self.game_warp_matrix.append(inv_matrix)
         self.frame_points = intersections
 
+    def delete_extra_parts(self, frame, frame_num=-1):
+        img = frame.copy()
+        top, bottom = self.get_extra_parts_location(frame_num)
+        img[int(bottom[1] - 10):int(bottom[1] + 10), int(bottom[0] - 15):int(bottom[0] + 15), :] = (0, 0, 0)
+        img[int(top[1] - 10):int(top[1] + 10), int(top[0] - 15):int(top[0] + 15), :] = (0, 0, 0)
+        return img
+
 
 if __name__ == '__main__':
     clay_surface_path = 'images/clay_surface.png'

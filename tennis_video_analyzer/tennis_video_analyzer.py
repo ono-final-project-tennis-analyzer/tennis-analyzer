@@ -1,14 +1,18 @@
 import argparse
 import cv2
 import torch
+
+from ball_detector.ball_detection_new import BallDetector
 from db.models import with_session
-from ball_detector.ball_tracker import BallTracker
 from court_detector.court_detection_computer_vision import CourtDetectorComputerVision
 from db.stores.events_store import EventStore
 from player_detector.player_detection import PlayerDetector
-from ball_bounce_detactor.ball_bounce_detactor import BallBounceDetector
+from player_pose_extractor.player_pose_extractor import PlayerPoseExtractor
+from player_pose_extractor.smoothing import Smooth
 from storage_client import StorageClient
-from utils.video_utils import get_video_properties
+from stroke_detector.stroke_detection_utils import find_strokes_indices, get_stroke_predictions
+from stroke_detector.stroke_detector import StrokeDetector
+from utils.video_utils import get_video_properties, get_dtype
 
 try:
     from video_analyzer_progress_tracker import VideoAnalyzerProgressTracker
@@ -56,27 +60,15 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
         progress_tracker.update_progress(0, stage="Initializing Models")
         court_detector = CourtDetectorComputerVision(verbose=False)
         player_detector = PlayerDetector(device)
-        ball_tracker = BallTracker(device)
-        ball_bounce_detector = BallBounceDetector()
+        ball_detector = BallDetector(device)
+        pose_extractor_bottom_player = PlayerPoseExtractor(person_num=1, box=False, dtype=get_dtype())
+        pose_extractor_top_player = PlayerPoseExtractor(person_num=1, box=False, dtype=get_dtype())
+        stroke_detector_bottom_player = StrokeDetector(device)
+        stroke_detector_top_player = StrokeDetector(device)
         progress_tracker.update_progress(100, stage="Initializing Models")
 
-        # Stage 3: Tracking the Ball and ball detection
-        progress_tracker.update_progress(0, stage="Tracking Ball")
+        # Stage 3: Processing Frames
         video = cv2.VideoCapture(video_path)
-        ball_tracker.infer_model(
-            video,
-            progress_tracker=progress_tracker,
-            stage="Tracking Ball",
-            start_progress=0,
-            weight=50  # Tracking the ball is 50% of progress
-        )
-        all_x_ball = [track[0] for track in ball_tracker.ball_tracking if track[0] is not None]
-        all_y_ball = [track[1] for track in ball_tracker.ball_tracking if track[1] is not None]
-        ball_bounce_detector.predict(all_x_ball, all_y_ball)
-        print(ball_bounce_detector.bounces)
-        progress_tracker.update_progress(100, stage="Tracking Ball")
-
-        # Stage 4: Processing Frames
         progress_tracker.update_progress(0, stage="Processing Video")
         fps, length, width, height = get_video_properties(video)
         fourcc = cv2.VideoWriter.fourcc(*'mp4v')
@@ -128,29 +120,19 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
                                                                   court_detector.court_warp_matrix[-1], True)
                     clone_frame = player_detector.draw_player_boxes_over_frame(clone_frame)
                 except Exception:
+                    print(f'Player detection failed on frame {frame_counter}')
                     pass
 
                 try:
-                    if ball_tracker.ball_tracking[frame_counter][0]:
-                        if draw_ball_trace:
-                            for j in range(ball_trace_length):
-                                idx = frame_counter - j
-                                if idx >= 0 and ball_tracker.ball_tracking[idx][0]:
-                                    draw_x = int(ball_tracker.ball_tracking[idx][0])
-                                    draw_y = int(ball_tracker.ball_tracking[idx][1])
-                                    clone_frame = cv2.circle(clone_frame, (draw_x, draw_y),
-                                                             radius=3, color=(0, 255, 0), thickness=2)
-                        else:
-                            draw_x = int(ball_tracker.ball_tracking[frame_counter][0])
-                            draw_y = int(ball_tracker.ball_tracking[frame_counter][1])
-                            clone_frame = cv2.circle(clone_frame, (draw_x, draw_y),
-                                                     radius=5, color=(0, 255, 0), thickness=2)
-                            clone_frame = cv2.putText(clone_frame, 'ball',
-                                                      org=(draw_x + 8, draw_y + 8),
-                                                      fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                                                      fontScale=0.8,
-                                                      thickness=2,
-                                                      color=(0, 255, 0))
+                    ball_detector.detect_ball(court_detector.delete_extra_parts(frame))
+                except Exception:
+                    print(f'Ball detection failed on frame {frame_counter}')
+                    pass
+
+                try:
+                    pose_extractor_bottom_player.extract_pose(frame,
+                                                              player_detector.player_bboxes_bottom_last_frame[0][0])
+                    pose_extractor_top_player.extract_pose(frame, player_detector.player_bboxes_top_last_frame[0][0])
                 except Exception:
                     pass
 
@@ -159,9 +141,25 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
         video.release()
         out_video.release()
         cv2.destroyAllWindows()
+
+        df_bottom = pose_extractor_bottom_player.save_to_csv('video', player_id=1)
+        smoother = Smooth()
+        df_smooth_bottom = smoother.smooth(df_bottom)
+        smoother.save_to_csv('video', player_id=1)
+
+        bottom_player_strokes_indices, top_player_strokes_indices, bounces_indices = find_strokes_indices(
+            player_detector.bottom_player_boxes,
+            player_detector.top_player_boxes,
+            ball_detector.xy_coordinates,
+            df_smooth_bottom)
+
+        bottom_player_strokes = get_stroke_predictions(video_path, stroke_detector_bottom_player,
+                                                       bottom_player_strokes_indices,
+                                                       player_detector.bottom_player_boxes)
+
         progress_tracker.update_progress(100, stage="Processing Video")
 
-        # Stage 5: Uploading Processed Video
+        # Stage 4: Uploading Processed Video
         if event_id:
             progress_tracker.update_progress(0, stage="Uploading Video")
             upload_processed_video(event_id, output_path, session)
