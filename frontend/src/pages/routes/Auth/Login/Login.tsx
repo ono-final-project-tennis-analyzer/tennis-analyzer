@@ -57,12 +57,6 @@ export default function Login() {
           </Button>
         </Group>
       </form>
-      <TennisPlaygroundMap
-        points={[
-          { x: -0.7, y: -0.9 },
-          { x: 0.5, y: 0.5 },
-        ]}
-      />
     </AuthWrapper>
   );
 }
