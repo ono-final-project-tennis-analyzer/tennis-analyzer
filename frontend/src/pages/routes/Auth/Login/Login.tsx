@@ -7,6 +7,7 @@ import AuthForm from "./components/AuthForm";
 import { LoginFormValues, loginSchema } from "./validation/loginSchema.ts";
 import AuthWrapper from "../components/AuthWrapper";
 import { useLoginMutation } from "@/services/accounts.service.ts";
+import { TennisPlaygroundMap } from "@/components/tennis-playground-map/tennis-playground-map.component.tsx";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -56,6 +57,12 @@ export default function Login() {
           </Button>
         </Group>
       </form>
+      <TennisPlaygroundMap
+        points={[
+          { x: -0.7, y: -0.9 },
+          { x: 0.5, y: 0.5 },
+        ]}
+      />
     </AuthWrapper>
   );
 }
