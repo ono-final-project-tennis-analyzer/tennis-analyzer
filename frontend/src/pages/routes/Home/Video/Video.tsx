@@ -6,13 +6,14 @@ import Time from "./Components/Time";
 import VideoPlayer from "./Components/VideoPlayer/VideoPlayer";
 import ForendBackendChart from "./Components/ForendBackendChart/ForendBackendChart";
 import Score from "./Components/Score/Score";
+import EventsTable from "./Components/EventsTable/EventsTable";
 export default function Video() {
   return  <Grid gutter="md">
     {/* Top Bar */}
     <Grid.Col span={12}>
       <Grid gutter="none">
       <Grid.Col span={8}>
-        <TimescaleSlider />
+        <TimescaleSlider />   
       </Grid.Col>
       <Grid.Col span={1}>
         <PlayAndPauseButton isPlaying={false} />
@@ -46,7 +47,10 @@ export default function Video() {
         </Grid.Col>
       </Grid>
     </Grid.Col>
-      </Grid>;    
+    <Grid.Col span={12}>
+      <EventsTable />
+    </Grid.Col>
+      </Grid>
 }
 
     
