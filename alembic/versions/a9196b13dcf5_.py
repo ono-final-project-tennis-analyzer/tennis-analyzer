@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 637156f4bbfe
+Revision ID: a9196b13dcf5
 Revises: 
-Create Date: 2024-11-23 21:10:04.487360
+Create Date: 2025-03-06 22:03:55.026113
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '637156f4bbfe'
+revision: str = 'a9196b13dcf5'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -47,6 +47,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('event_id', sa.Integer(), nullable=True),
     sa.Column('video_path', sa.String(), nullable=False),
+    sa.Column('processed_video_path', sa.String(), nullable=True),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('upload_date', sa.String(), nullable=False),
     sa.Column('status', sa.Integer(), nullable=False),

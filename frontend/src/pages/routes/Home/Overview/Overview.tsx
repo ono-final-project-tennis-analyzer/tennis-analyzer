@@ -6,6 +6,8 @@ import ServeSpeedChart from "./components/ServeSpeedChart";
 import AccuracyChartCard from "./components/AccuracyChartCard";
 import StrokeTypesChartCard from "./components/StrokeTypesChartCard";
 import MatchOutcomeChartCard from "./components/MatchOutcomeChartCard";
+import { TennisPlaygroundMap } from "@/components/tennis-playground-map/tennis-playground-map.component";
+import PlayGroundTest from "./components/PlayGroundTest";
 
 export default function Overview() {
   return (
@@ -34,6 +36,11 @@ export default function Overview() {
       </Grid.Col>
       <Grid.Col span={4}>
         <MatchOutcomeChartCard />
+      </Grid.Col>
+
+      <Grid.Col span={12}>
+
+        
       </Grid.Col>
     </Grid>
   );

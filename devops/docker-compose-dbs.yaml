@@ -70,6 +70,8 @@ services:
       - ./flower-data:/app
     networks:
       - shared_network
+    environment:
+      FLOWER_UNAUTHENTICATED_API: true
 
 networks:
   shared_network:

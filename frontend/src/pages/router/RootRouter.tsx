@@ -5,6 +5,7 @@ import { Login, Signup } from "../routes/Auth";
 import { Overview } from "../routes/Home";
 import DashboardLayout from "@/pages/layouts/DashboardLayout";
 import Videos from "@/pages/routes/Home/Videos";
+import Video from "../routes/Home/Video";
 
 const router = createBrowserRouter(
   [
@@ -22,6 +23,7 @@ const router = createBrowserRouter(
       children: [
           { path: "/", element: <Overview /> },
           { path: "/videos", element: <Videos /> },
+          { path: "/video/:id", element: <Video /> },
       ],
     },
   ],
