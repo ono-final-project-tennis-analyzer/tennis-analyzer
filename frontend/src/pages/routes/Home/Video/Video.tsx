@@ -5,6 +5,7 @@ import PlayAndPauseButton from "./Components/PlayAndPauseButton/PlayAndPauseButt
 import Time from "./Components/Time";
 import VideoPlayer from "./Components/VideoPlayer/VideoPlayer";
 import ForendBackendChart from "./Components/ForendBackendChart/ForendBackendChart";
+import Score from "./Components/Score/Score";
 export default function Video() {
   return  <Grid gutter="md">
     {/* Top Bar */}
@@ -36,7 +37,7 @@ export default function Video() {
               <ForendBackendChart/>
             </Grid.Col>
             <Grid.Col span={12}>
-              
+              <Score Player1Score={10} Player2Score={20} />
             </Grid.Col>
           </Grid>
         </Grid.Col>
