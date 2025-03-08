@@ -1,44 +1,9 @@
 from scipy import signal
 from scipy.interpolate import interp1d
-import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 import numpy as np
-import cv2
 
 from utils.video_utils import center_of_box, get_video_properties
-
-
-def get_stroke_predictions(video_path, stroke_recognition, strokes_frames, player_boxes):
-    """
-    Get the stroke prediction for all sections where we detected a stroke
-    """
-    predictions = {}
-    cap = cv2.VideoCapture(video_path)
-    fps, length, width, height = get_video_properties(cap)
-    video_length = 2
-    # For each stroke detected trim video part and predict stroke
-    for frame_num in strokes_frames:
-        # Trim the video (only relevant frames are taken)
-        starting_frame = max(0, frame_num - int(video_length * fps * 2 / 3))
-        cap.set(1, starting_frame)
-        i = 0
-
-        while True:
-            ret, frame = cap.read()
-
-            if not ret:
-                break
-
-            stroke_recognition.add_frame(frame, player_boxes[starting_frame + i][0])
-            i += 1
-            if i == int(video_length * fps):
-                break
-        # predict the stroke
-        probs, stroke = stroke_recognition.predict_saved_seq()
-        predictions[frame_num] = {'probs': probs, 'stroke': stroke}
-
-    cap.release()
-    return predictions
 
 
 def find_strokes_indices(player_1_boxes, player_2_boxes, ball_positions, skeleton_df):

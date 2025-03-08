@@ -16,3 +16,6 @@ class Videos(BaseModel):
 
     event = relationship('Events')
     account_id = mapped_column(ForeignKey('accounts.id'))
+    
+    # Relationship with VideoEvents
+    video_events = relationship("VideoEvents", back_populates="video", cascade="all, delete-orphan")

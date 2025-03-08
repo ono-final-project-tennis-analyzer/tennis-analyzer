@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, JSON, ForeignKey
+from sqlalchemy.orm import relationship
 
 from .base_model import BaseModel
 
