@@ -1,0 +1,32 @@
+/* Center the slider inside the card and allow overflow for labels */
+.sliderCard {
+  width: 100%;
+  padding: 0.5rem 0;
+}
+
+/* Let the slider size itself naturally with room for marks and labels */
+.sliderRoot {
+  width: 100%;
+  padding-bottom: 24px; /* Extra space for the labels and marks */
+  border-radius: 0 !important;
+}
+
+/* Dark track with no rounding */
+.sliderTrack {
+
+}
+
+/* Square, contrasting thumb */
+.sliderThumb {
+
+}
+
+/* Marks styled as thin lines */
+.sliderMark {
+
+}
+
+/* Mark labels in a contrasting color with extra margin */
+.sliderMarkLabel {
+
+}

@@ -21,9 +21,9 @@ const router = createBrowserRouter(
       id: "dashboard-layout",
       Component: DashboardLayout,
       children: [
-          { path: "/", element: <Overview /> },
-          { path: "/videos", element: <Videos /> },
-          { path: "/video/:id", element: <Video /> },
+        { path: "/", element: <Overview /> },
+        { path: "/videos", element: <Videos /> },
+        { path: "/video/:id", element: <Video videoURL="/input_2.mp4" /> },
       ],
     },
   ],
