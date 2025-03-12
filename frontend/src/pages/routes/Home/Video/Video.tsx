@@ -8,15 +8,23 @@ import VideoTopControls from "./Components/VideoTopControls";
 import { useParams } from "react-router-dom";
 import { useGetVideoWithEventsQuery, useStreamVideoQuery } from "@/services/videos.service.ts";
 import { useVideoContext } from "./context";
+import { useEffect } from "react";
 
 export default function Video() {
-
   const { id } = useParams();
   const getVideoWithEventsQuery = useGetVideoWithEventsQuery(id);
+  const { streamUrl } = useStreamVideoQuery(id);
+  const { setUrl } = useVideoContext();
+
+  useEffect(() => {
+    if (streamUrl) {
+      setUrl(streamUrl);
+    }
+  }, [streamUrl, setUrl]);
+
   if(getVideoWithEventsQuery.isLoading){
     return <Loader />
   }
-  const { streamUrl, isLoading, error } = useStreamVideoQuery(id);
 
   return (
     <Grid gutter="md">

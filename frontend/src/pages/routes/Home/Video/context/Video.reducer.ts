@@ -20,7 +20,8 @@ export type VideoAction =
   | { type: VideoActionTypes.PAUSE }
   | { type: VideoActionTypes.UPDATE_TIME; payload: number }
   | { type: VideoActionTypes.SET_DURATION; payload: number }
-  | { type: VideoActionTypes.TOGGLE_MUTE };
+  | { type: VideoActionTypes.TOGGLE_MUTE }
+  | { type: VideoActionTypes.SET_VIDEO_URL; payload: string };
 
 export function videoReducer(
   state: VideoState,
@@ -39,6 +40,11 @@ export function videoReducer(
       return { ...state, duration: action.payload };
     case VideoActionTypes.TOGGLE_MUTE:
       return { ...state, muted: !state.muted };
+    case VideoActionTypes.SET_VIDEO_URL:
+      if (state.videoRef.current) {
+        state.videoRef.current.src = action.payload;
+      }
+      return state;
     default:
       return state;
   }

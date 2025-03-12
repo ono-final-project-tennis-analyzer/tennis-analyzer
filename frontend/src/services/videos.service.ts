@@ -44,8 +44,8 @@ export const useGetVideoWithEventsQuery = (videoId?: string) => {
 };
 
 export const useStreamVideoQuery = (videoId?: string) => {
-  // Instead of creating a Blob URL, we can directly use the stream URL
-  const streamUrl = `/api/videos/stream/${videoId}`;
+  const api = useRef(new Api());
+  const streamUrl = `${Api.BASE_URL}/videos/stream/${videoId}`;
 
   return {
     streamUrl,

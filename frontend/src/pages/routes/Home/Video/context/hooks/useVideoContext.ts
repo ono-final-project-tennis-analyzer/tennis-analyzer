@@ -50,11 +50,17 @@ export const useVideoContext = () => {
 
   const toggleMute = useCallback(() => {
     if (state.videoRef.current) {
-      // Directly update the video element's muted property
       state.videoRef.current.muted = !state.videoRef.current.muted;
     }
     dispatch({ type: VideoActionTypes.TOGGLE_MUTE });
   }, [state.videoRef, dispatch]);
+
+  const setUrl = useCallback(
+    (url: string) => {
+      dispatch({ type: VideoActionTypes.SET_VIDEO_URL, payload: url });
+    },
+    [dispatch]
+  );
 
   return {
     state,
@@ -66,5 +72,6 @@ export const useVideoContext = () => {
     restartVideo,
     seekVideo,
     toggleMute,
+    setUrl,
   };
 };
