@@ -1,5 +1,5 @@
 import React from "react";
-import { IconDownload, IconTrash } from "@tabler/icons-react";
+import { IconDownload, IconEye, IconTrash } from "@tabler/icons-react";
 import { rem } from "@mantine/core";
 import { Video } from "@/@types/video.ts";
 import Table, {
@@ -12,6 +12,7 @@ import VideoProgressCell from "./components/VideoProgressCell.tsx";
 import VideoTableActions from "./components/VideoTableActions";
 import { useDeleteVideoMutation } from "@/services/videos.service.ts";
 import Api from "@/services/api.ts";
+import { useNavigate } from "react-router-dom";
 
 const columns: TableColumn<Video>[] = [
   {
@@ -52,7 +53,9 @@ const columns: TableColumn<Video>[] = [
 ];
 
 const VideoTable: React.FC<{ data: Video[] }> = ({ data }) => {
-  const { mutate: deleteVideo } = useDeleteVideoMutation();
+    const { mutate: deleteVideo } = useDeleteVideoMutation();
+    const navigate = useNavigate();
+
 
   const createActionItems = (
     cell: TableCell<Video>,
@@ -78,6 +81,13 @@ const VideoTable: React.FC<{ data: Video[] }> = ({ data }) => {
       icon: <IconTrash style={{ width: rem(14), height: rem(14) }} />,
       onClick: (cell) => deleteVideo(Number(cell.data.id)),
       danger: true,
+    },
+    {
+      label: "Check Analisys ",
+      icon: <IconEye style={{ width: rem(14), height: rem(14) }} />,
+      onClick: (cell) => {
+       navigate(`/video/${cell.data.id}`)
+      },
     },
   ];
 

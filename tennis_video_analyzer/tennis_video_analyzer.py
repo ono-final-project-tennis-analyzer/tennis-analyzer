@@ -1,8 +1,13 @@
+import sys
+import os
 import argparse
 import cv2
 import torch
-import os
 
+# Add the parent directory to sys.path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Now import the detector modules
 from ball_detector.ball_detection_new import BallDetector
 from db.models import with_session
 from court_detector.court_detection_computer_vision import CourtDetectorComputerVision
@@ -285,7 +290,7 @@ def save_video_events(session, event_id, video_id, bottom_player_strokes_indices
     try:
         # Delete any existing events for this video_id
         video_events_store.delete_video_events_by_video_id(video_id)
-        
+        print('deleted events for video_id: ', video_id)
         # Save bottom player strokes
         for frame in bottom_player_strokes_indices:
             try:
@@ -293,7 +298,7 @@ def save_video_events(session, event_id, video_id, bottom_player_strokes_indices
                 frame_number = int(frame) if hasattr(frame, 'item') else int(frame)
                 time_seconds = float(frame_number) / fps
                 time_string = frame_to_time(frame_number, fps)
-                
+                print(f'creating event for frame {frame_number}')
                 video_events_store.create_video_event(
                     video_id=video_id,
                     event_type='bottom_player_stroke',
@@ -364,7 +369,8 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
         try:
             # Initialize progress tracker
             progress_tracker = VideoAnalyzerProgressTracker(session, total_frames=100, event_id=event_id)
-            
+          
+
             # Get video ID if event_id is provided
             if event_id:
                 from db.stores.videos_store import VideosStore
@@ -466,9 +472,12 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
                     try:
                         player_detector.detect_top_and_bottom_players(clone_frame,
                                                                       court_detector.court_warp_matrix[-1], True)
+        
                         clone_frame = player_detector.draw_player_boxes_over_frame(clone_frame)
-                    except Exception:
+    
+                    except Exception as e:
                         print(f'Player detection failed on frame {frame_counter}')
+                        print(f'error: {str(e)}')
                         pass
 
                     try:
@@ -526,18 +535,19 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
                 "top_player_strokes": top_player_strokes_indices,
                 "ball_bounces": bounces_indices
             }
-            
+            print(f'events_dict: {events_dict}')
             time_values_dict = frames_to_times(events_dict, fps)
             print("\nEvents dictionary with time values:")
             for event_name, time_values in time_values_dict.items():
                 print(f"{event_name}: {time_values}")
-                
+            print(f'trying to upload video')
             # Stage 4: Uploading Processed Video
             if event_id and video_id:
                 progress_tracker.update_progress(0, stage="Uploading Video")
                 upload_processed_video(event_id, video_id, output_path, session)
                 
                 # Save events to database
+                print(f'saving events to database')
                 save_video_events(
                     session, 
                     event_id, 
@@ -629,6 +639,7 @@ if __name__ == '__main__':
 
     # Process the video
     try:
+        print('processing video')
         process_video(
             event_id=args.event_id,
             video_path=args.video_path,

@@ -17,11 +17,34 @@ def get_videos():
             return jsonify({"error": " No user detected"}), 400
         with create_session() as session:
             store = VideoStore(session)
-            videos = store.get_all_videos( account_id= account_id)
+            videos = store.get_all_videos(account_id=account_id)
         return jsonify({"videos": videos}), 200
     except Exception as e:
         print(e)
         return jsonify({"error": str(e)}), 500
+
+@login_required
+@video_bp.route('/<int:video_id>', methods=['GET'])
+def get_video(video_id):
+    try:
+        account_id = current_user.id
+        if not account_id:
+            return jsonify({"error": "No user detected"}), 400
+
+        with create_session() as session:
+            video_store = VideoStore(session)
+            video = video_store.get_video(video_id)
+            if not video or video.account_id != account_id:
+                return jsonify({"error": "Video not found or unauthorized"}), 404
+
+            # Fetch related video events
+            video_events = video.video_events  # Assuming a relationship is defined in the Video model
+
+        return jsonify({"video": video, "events": video_events}), 200
+
+    except Exception as e:
+        print(f"Error fetching video: {e}")
+        return jsonify({"error": "Failed to fetch video"}), 500
 
 @login_required
 @video_bp.route('/<int:video_id>', methods=['DELETE'])

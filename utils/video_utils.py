@@ -1,5 +1,6 @@
 import cv2
 import torch
+import numpy as np
 
 
 def get_video_properties(video):
@@ -55,7 +56,7 @@ def frame_to_time(frame_number, fps):
     """
     # Calculate total seconds
     total_seconds = frame_number / fps
-    
+    print(f'tring to convert {frame_number} to time {total_seconds} with fps {fps} ')
     # Calculate hours, minutes, seconds and milliseconds
     hours = int(total_seconds // 3600)
     minutes = int((total_seconds % 3600) // 60)
@@ -80,12 +81,17 @@ def frames_to_times(frame_indices_dict, fps):
         dict: Dictionary with keys as event names and values as lists of time strings
     """
     result = {}
-    
     for event_name, frame_indices in frame_indices_dict.items():
+        # Convert numpy arrays to regular Python lists
+        if isinstance(frame_indices, np.ndarray):
+            frame_indices = frame_indices.tolist()
+            
         if isinstance(frame_indices, list):
-            result[event_name] = [frame_to_time(frame, fps) for frame in frame_indices]
+            print('is list')
+            result[event_name] = [frame_to_time(int(frame), fps) for frame in frame_indices]
         else:
+            print('is not list')
             # Handle case where value is a single frame number
-            result[event_name] = frame_to_time(frame_indices, fps)
+            result[event_name] = frame_to_time(int(frame_indices), fps)
     
     return result

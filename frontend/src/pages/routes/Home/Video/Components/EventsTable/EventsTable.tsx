@@ -1,4 +1,3 @@
-
 import { Card } from "@mantine/core";
 import { VideoEvent } from "@/@types/VideoEvent";
 

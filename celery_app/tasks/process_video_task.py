@@ -21,7 +21,7 @@ def process_video_task(meta: TypedDict):
         with with_session() as session:
             store = EventStore(session)
             event = store.get_event(meta['event_id'])
-
+        
             print(f"target event: {event.id}")
 
             process_video(event_id=event.id)
