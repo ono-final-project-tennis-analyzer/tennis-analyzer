@@ -18,7 +18,6 @@ export default function Video() {
   if(getVideoQuery.isLoading){
     return <Loader />
   }
-  console.log(getVideoQuery.data)
   return (
     <Grid gutter="md">
       {/* Top Bar */}
@@ -49,7 +48,7 @@ export default function Video() {
         </Grid>
       </Grid.Col>
       <Grid.Col span={12}>
-        <EventsTable />
+        <EventsTable events={getVideoQuery.data?.data.data.video_events ?? []} />
       </Grid.Col>
     </Grid>
   );
