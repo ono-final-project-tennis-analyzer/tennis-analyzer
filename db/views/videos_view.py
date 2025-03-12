@@ -38,9 +38,27 @@ def get_video(video_id):
                 return jsonify({"error": "Video not found or unauthorized"}), 404
 
             # Fetch related video events
-            video_events = video.video_events  # Assuming a relationship is defined in the Video model
+            video_events = [
+                {
+                    'id': event.id,
+                    'video_id': event.video_id,
+                    'event_type': event.event_type,
+                
+                    'created_at': str(event.created_at) if event.created_at else None,
+                    'updated_at': str(event.updated_at) if event.updated_at else None
+                }
+                for event in video.video_events
+            ]
 
-        return jsonify({"video": video, "events": video_events}), 200
+            video_data = {
+                'id': video.id,
+                'title': video.event.meta['file_name'],
+                # Add other video fields you need
+                'created_at': str(video.created_at) if video.created_at else None,
+                'updated_at': str(video.updated_at) if video.updated_at else None,
+                'video_events': video_events
+            }
+            return jsonify({"data": video_data}), 200
 
     except Exception as e:
         print(f"Error fetching video: {e}")
