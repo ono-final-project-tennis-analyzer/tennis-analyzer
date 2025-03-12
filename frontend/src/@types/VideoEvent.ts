@@ -1,6 +1,6 @@
 export interface VideoEvent {
         created_at: string,
-        event_type: string,
+        event_type: 'ball_bounce' | 'top_player_stroke' | 'bottom_player_stroke'
         frame_number: number,
         id: string,
         metadata: {

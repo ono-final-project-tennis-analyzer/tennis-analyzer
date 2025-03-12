@@ -26,6 +26,8 @@ export default function Video() {
     return <Loader />
   }
 
+  const videoEvents = getVideoWithEventsQuery.data?.data.data.video_events ?? [];
+
   return (
     <Grid gutter="md">
       <Grid.Col span={12}>
@@ -48,7 +50,7 @@ export default function Video() {
             </Grid>
           </Grid.Col>
           <Grid.Col span={4} style={{ maxHeight: "500px" }}>
-            <PlayGroundTest />
+            <PlayGroundTest events={videoEvents} />
           </Grid.Col>
         </Grid>
       </Grid.Col>
