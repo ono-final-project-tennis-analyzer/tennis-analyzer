@@ -8,6 +8,7 @@ export enum VideoActionTypes {
   UPDATE_TIME = "UPDATE_TIME",
   SET_DURATION = "SET_DURATION",
   TOGGLE_MUTE = "TOGGLE_MUTE",
+  SET_VIDEO_URL = "SET_VIDEO_URL",
 }
 
 export type VideoAction =

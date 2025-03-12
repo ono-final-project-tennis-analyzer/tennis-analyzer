@@ -43,7 +43,11 @@ def get_video(video_id):
                     'id': event.id,
                     'video_id': event.video_id,
                     'event_type': event.event_type,
-                
+                    'video_id': video.id,
+                    'frame_number': event.frame_number,
+                    'time_seconds': event.time_seconds,
+                    'time_string': event.time_string,
+                    'metadata': event.event_metadata,
                     'created_at': str(event.created_at) if event.created_at else None,
                     'updated_at': str(event.updated_at) if event.updated_at else None
                 }
@@ -141,6 +145,46 @@ def stream_video(type: str, video_id: int):
                 io.BytesIO(file_bytes),
                 download_name=file_path,
                 as_attachment=True,
+                mimetype="video/mp4"
+            )
+
+    except Exception as e:
+        print(f"Error streaming video: {e}")
+        abort(500, description="Internal Server Error")
+
+@login_required
+@video_bp.route("/stream/<int:video_id>", methods=["GET"])
+def stream_video_content(video_id: int):
+    try:
+        req_account_id = current_user.id
+        if not req_account_id:
+            return jsonify({"error": "No user detected"}), 400
+
+        with create_session() as session:
+            video_store = VideoStore(session)
+            storage_client = StorageClient()
+
+            # Fetch video details
+            video = video_store.get_video(video_id)
+            if not video:
+                abort(404, description="Video not found")
+
+            # Check authorization
+            if req_account_id != video.account_id:
+                return jsonify({"error": "Video not found or unauthorized"}), 404
+
+            # Get file name from video metadata
+            file_name = video.event.meta.get('file_name')
+            if not file_name:
+                abort(404, description="Video file not found")
+
+            # Stream the video
+            video_stream = storage_client.stream_file(video.account_id, file_name)
+            file_bytes = video_stream.read()
+            video_stream.close()
+
+            return send_file(
+                io.BytesIO(file_bytes),
                 mimetype="video/mp4"
             )
 

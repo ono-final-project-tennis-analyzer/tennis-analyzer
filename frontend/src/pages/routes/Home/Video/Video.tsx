@@ -1,31 +1,28 @@
 import { Grid, Loader } from "@mantine/core";
 import PlayGroundTest from "../Overview/components/PlayGroundTest";
-import TimescaleSlider from "./Components/VideoTopControls/components/TimescaleSlider";
-import Time from "./Components/VideoTopControls/components/Time";
 import VideoPlayer from "./Components/VideoPlayer/VideoPlayer";
 import ForendBackendChart from "./Components/ForendBackendChart/ForendBackendChart";
 import Score from "./Components/Score/Score";
 import EventsTable from "./Components/EventsTable/EventsTable";
-import React from "react";
 import VideoTopControls from "./Components/VideoTopControls";
 import { useParams } from "react-router-dom";
-import { useGetVideoQuery } from "@/services/videos.service.ts";
+import { useGetVideoWithEventsQuery, useStreamVideoQuery } from "@/services/videos.service.ts";
+import { useVideoContext } from "./context";
 
 export default function Video() {
 
   const { id } = useParams();
-  const getVideoQuery = useGetVideoQuery(id);
-  if(getVideoQuery.isLoading){
+  const getVideoWithEventsQuery = useGetVideoWithEventsQuery(id);
+  if(getVideoWithEventsQuery.isLoading){
     return <Loader />
   }
+  const { streamUrl, isLoading, error } = useStreamVideoQuery(id);
+
   return (
     <Grid gutter="md">
-      {/* Top Bar */}
       <Grid.Col span={12}>
         <VideoTopControls />
       </Grid.Col>
-
-      {/* Video, Carts and Court Playground */}
 
       <Grid.Col span={12}>
         <Grid gutter="md">
@@ -48,7 +45,7 @@ export default function Video() {
         </Grid>
       </Grid.Col>
       <Grid.Col span={12}>
-        <EventsTable events={getVideoQuery.data?.data.data.video_events ?? []} />
+        <EventsTable events={getVideoWithEventsQuery.data?.data.data.video_events ?? []} />
       </Grid.Col>
     </Grid>
   );

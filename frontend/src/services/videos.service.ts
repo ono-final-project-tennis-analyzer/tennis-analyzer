@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import Api from "./api.ts";
 import { Video } from "../@types/video.ts";
+import { VideoEventQueryResponse } from "@/@types/VideoEvent.ts";
 
 export function useGetVideosQuery() {
   const api = useRef(new Api());
@@ -32,12 +33,25 @@ export const useDeleteVideoMutation = () => {
   });
 };
 
-export const useGetVideoQuery = (videoId?: string) => {
+export const useGetVideoWithEventsQuery = (videoId?: string) => {
   const api = useRef(new Api());
 
-  return useQuery({
-    queryKey: ["get-video", videoId],
+  return useQuery<VideoEventQueryResponse>({
+    queryKey: ["get-video-json", videoId],
     queryFn: () => api.current.get(`/videos/${videoId}`),
     enabled: !!videoId, 
   });
 };
+
+export const useStreamVideoQuery = (videoId?: string) => {
+  // Instead of creating a Blob URL, we can directly use the stream URL
+  const streamUrl = `/api/videos/stream/${videoId}`;
+
+  return {
+    streamUrl,
+    isLoading: false,
+    error: null
+  };
+};
+
+

@@ -22,8 +22,19 @@ export default function EventsTable({events}: {events: VideoEvent[]}) {
           accessor: "event_type",
           minWidth: 30,
         },
+        {
+          header: "Time",
+          renderRow: (cell) => cell.data.time_string,
+          accessor: "time_string",
+          minWidth: 30,
+        },
+        {
+          header: "Frame",
+          renderRow: (cell) => cell.data.frame_number,
+          accessor: "frame_number",
+          minWidth: 30,
+        },
 
-        
       ];
 
 
