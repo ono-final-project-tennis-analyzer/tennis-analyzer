@@ -45,7 +45,7 @@ export default function Video() {
                 <ForendBackendChart />
               </Grid.Col>
               <Grid.Col span={12}>
-                <Score Player1Score={10} Player2Score={20} />
+                <Score Player1Score={0} Player2Score={0} />
               </Grid.Col>
             </Grid>
           </Grid.Col>
