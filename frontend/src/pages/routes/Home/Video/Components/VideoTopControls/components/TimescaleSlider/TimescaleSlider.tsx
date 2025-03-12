@@ -32,7 +32,7 @@ const TimescaleSlider: React.FC = () => {
     }
   }, [currentTime, dragging]);
 
-  console.log({marks,step, duration })
+  // console.log({marks,step, duration })
 
   return (
     <Stack className={styles.sliderCard}>

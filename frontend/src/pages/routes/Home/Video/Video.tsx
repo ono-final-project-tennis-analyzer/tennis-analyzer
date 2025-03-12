@@ -1,4 +1,4 @@
-import { Grid } from "@mantine/core";
+import { Grid, Loader } from "@mantine/core";
 import PlayGroundTest from "../Overview/components/PlayGroundTest";
 import TimescaleSlider from "./Components/VideoTopControls/components/TimescaleSlider";
 import Time from "./Components/VideoTopControls/components/Time";
@@ -8,7 +8,17 @@ import Score from "./Components/Score/Score";
 import EventsTable from "./Components/EventsTable/EventsTable";
 import React from "react";
 import VideoTopControls from "./Components/VideoTopControls";
+import { useParams } from "react-router-dom";
+import { useGetVideoQuery } from "@/services/videos.service.ts";
+
 export default function Video() {
+
+  const { id } = useParams();
+  const getVideoQuery = useGetVideoQuery(id);
+  if(getVideoQuery.isLoading){
+    return <Loader />
+  }
+  console.log(getVideoQuery.data)
   return (
     <Grid gutter="md">
       {/* Top Bar */}

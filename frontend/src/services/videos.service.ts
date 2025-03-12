@@ -31,3 +31,13 @@ export const useDeleteVideoMutation = () => {
     },
   });
 };
+
+export const useGetVideoQuery = (videoId?: string) => {
+  const api = useRef(new Api());
+
+  return useQuery({
+    queryKey: ["get-video", videoId],
+    queryFn: () => api.current.get(`/videos/${videoId}`),
+    enabled: !!videoId, 
+  });
+};
