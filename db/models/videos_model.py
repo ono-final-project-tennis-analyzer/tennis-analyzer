@@ -17,5 +17,14 @@ class Videos(BaseModel):
     event = relationship('Events')
     account_id = mapped_column(ForeignKey('accounts.id'))
     
+    # New columns for player accounts
+    bottom_player_account_id = mapped_column(ForeignKey('accounts.id'), nullable=True)
+    top_player_account_id = mapped_column(ForeignKey('accounts.id'), nullable=True)
+    
+    # Relationships with Account model
+    bottom_player = relationship('Account', foreign_keys=[bottom_player_account_id])
+    top_player = relationship('Account', foreign_keys=[top_player_account_id])
+    account = relationship('Account', foreign_keys=[account_id])
+    
     # Relationship with VideoEvents
     video_events = relationship("VideoEvents", back_populates="video", cascade="all, delete-orphan")

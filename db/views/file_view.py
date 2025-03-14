@@ -31,6 +31,16 @@ def create_file():
 
         if file_type not in ['mp4', 'avi', 'flv']:
             return jsonify({"error": "Invalid file type"}), 400
+            
+        # Get player account IDs from the request
+        bottom_player_account_id = request.form.get('bottom_player_account_id')
+        top_player_account_id = request.form.get('top_player_account_id')
+        
+        # Convert to integers if provided
+        if bottom_player_account_id:
+            bottom_player_account_id = int(bottom_player_account_id)
+        if top_player_account_id:
+            top_player_account_id = int(top_player_account_id)
 
         storage = StorageClient()
 
@@ -54,7 +64,14 @@ def create_file():
             store = EventStore(session)
             video_store = VideoStore(session)
             event = store.create_event(name="video_upload", account_id=str(account_id), meta=meta)
-            video_store.create_video(event_id=event.id,video_path=temp_file_path, name=file.filename, account_id=account_id)
+            video_store.create_video(
+                event_id=event.id,
+                video_path=temp_file_path, 
+                name=file.filename, 
+                account_id=account_id,
+                bottom_player_account_id=bottom_player_account_id,
+                top_player_account_id=top_player_account_id
+            )
             os.remove(temp_file_path)
 
             meta['event_id'] = event.id

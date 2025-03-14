@@ -67,3 +67,9 @@ def get_current_user():
         return jsonify({"message": "Authorized", "user": user_data}), 200
     else:
         return jsonify({"message": "Not Authorized"}), 401
+
+
+@account_bp.route('/select-options', methods=['GET'])
+def get_account_select_options():
+    accounts_data = account_store.list_accounts()
+    return jsonify(accounts_data), 200

@@ -13,9 +13,18 @@ class VideoStore:
         self._session = session
         self._event_store = EventStore(session)
 
-    def create_video(self, account_id: int, video_path: str, name: str, event_id: int):
+    def create_video(self, account_id: int, video_path: str, name: str, event_id: int, bottom_player_account_id: Optional[int] = None, top_player_account_id: Optional[int] = None):
         upload_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        video = Videos(account_id=account_id, video_path=video_path, name=name, upload_date=upload_date, event_id=event_id, status=1)
+        video = Videos(
+            account_id=account_id, 
+            video_path=video_path, 
+            name=name, 
+            upload_date=upload_date, 
+            event_id=event_id, 
+            status=1,
+            bottom_player_account_id=bottom_player_account_id,
+            top_player_account_id=top_player_account_id
+        )
         self._session.add(video)
         self._session.commit()
         return video
@@ -72,4 +81,6 @@ class VideoStore:
             "upload_date": video.upload_date,
             "status": video.status,
             "event_data": event_data,
+            "bottom_player_account_id": video.bottom_player_account_id,
+            "top_player_account_id": video.top_player_account_id
         }
