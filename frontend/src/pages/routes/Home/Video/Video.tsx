@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import { useGetVideoWithEventsQuery, useStreamVideoQuery } from "@/services/videos.service.ts";
 import { useVideoContext } from "./context";
 import { useEffect } from "react";
+import { VideoEvent } from "@/@types/VideoEvent";
 
 export default function Video() {
   const { id } = useParams();
@@ -55,7 +56,9 @@ export default function Video() {
         </Grid>
       </Grid.Col>
       <Grid.Col span={12}>
-        <EventsTable events={getVideoWithEventsQuery.data?.data.data.video_events ?? []} />
+        <EventsTable onSetStrokeType={(event: VideoEvent)=>{
+          console.log("user clicked set stroke type to event : ", event);
+        }} events={getVideoWithEventsQuery.data?.data.data.video_events ?? []} />
       </Grid.Col>
     </Grid>
   );
