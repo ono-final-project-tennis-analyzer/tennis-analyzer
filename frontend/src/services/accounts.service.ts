@@ -1,7 +1,7 @@
 import {useRef} from "react";
 import {useMutation, useQuery} from "@tanstack/react-query";
 import Api from "./api.ts";
-import {User} from "../@types/User.ts";
+import {IUserData, User} from "../@types/User.ts";
 
 
 export const useMeQuery = () => {
@@ -10,7 +10,7 @@ export const useMeQuery = () => {
     return useQuery({
         queryKey: ["me"],
         queryFn: async () => {
-            const response = await api.current.get<User>("/accounts/@me");
+            const response = await api.current.get("/accounts/@me");
             return response;
         },
         select: ({data}) => data.user as User,
@@ -59,4 +59,18 @@ export const useRegisterMutation = (onSuccess?: VoidFunction) => {
     });
 
 }
+
+export const useGetAccountQuery = () => {
+    const api = useRef(new Api());
+
+    return useQuery({
+        queryKey: ["account-select-options"],
+        queryFn: async () => {
+            return await api.current.get(`/accounts/select-options`);
+        },
+        select: ({data}) => data.accounts as IUserData[],
+        retry: false,
+    });
+
+};
 
