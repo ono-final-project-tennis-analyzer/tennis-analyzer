@@ -37,17 +37,17 @@ export enum EVideoEventType {
   BottomPlayerStroke = 'bottom_player_stroke'
 }
 export enum EStrokeType {
-  Forehand = 'forehand',
-  Backhand = 'backhand',
-  Serve = 'serve',
-  ForehandVolley = 'forehand_volley',
-  BackhandVolley = 'backhand_volley',
-  BackhandSlice = 'backhand_slice',
-  ForehandSlice = 'forehand_slice',
-  ServeSlice = 'serve_slice',
-  DropShot = 'drop_shot',
-  Smash = 'smash',
-  Net = 'net',
+  Forehand = 0,
+  Backhand = 1,
+  Serve = 2,
+  ForehandVolley = 3,
+  BackhandVolley = 4,
+  BackhandSlice = 5,
+  ForehandSlice = 6,
+  ServeSlice = 7,
+  DropShot = 8,
+  Smash = 9,
+  Net = 10,
 }
 
 export function getStrokeTypeText(strokeType: EStrokeType){
