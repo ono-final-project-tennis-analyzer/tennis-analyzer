@@ -8,8 +8,9 @@ import VideoTopControls from "./Components/VideoTopControls";
 import { useParams } from "react-router-dom";
 import { useGetVideoWithEventsQuery, useStreamVideoQuery } from "@/services/videos.service.ts";
 import { useVideoContext } from "./context";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { VideoEvent } from "@/@types/VideoEvent";
+import StrokeTypeChooser from "./Components/StrokeTypeChooser";
 
 export default function Video() {
   const { id } = useParams();
@@ -28,7 +29,7 @@ export default function Video() {
   }
 
   const videoEvents = getVideoWithEventsQuery.data?.data.data.video_events ?? [];
-
+  const [event, setEvent] = useState<VideoEvent | undefined>(undefined);
   return (
     <Grid gutter="md">
       <Grid.Col span={12}>
@@ -58,7 +59,10 @@ export default function Video() {
       <Grid.Col span={12}>
         <EventsTable onSetStrokeType={(event: VideoEvent)=>{
           console.log("user clicked set stroke type to event : ", event);
+          setEvent(event);
         }} events={getVideoWithEventsQuery.data?.data.data.video_events ?? []} />
+
+        <StrokeTypeChooser event={event} setEvent={setEvent} />
       </Grid.Col>
     </Grid>
   );
