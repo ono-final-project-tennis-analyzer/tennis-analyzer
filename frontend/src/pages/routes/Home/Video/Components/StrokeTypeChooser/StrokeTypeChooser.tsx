@@ -1,4 +1,4 @@
-import { VideoEvent, EStrokeType } from "@/@types/VideoEvent";
+import { VideoEvent, EStrokeType, getStrokeTypeText } from "@/@types/VideoEvent";
 import { Modal, Select, Button   } from "@mantine/core";
 import { useForm } from "@mantine/form";
 
@@ -20,11 +20,11 @@ const form = useForm({
   }}>
     <form onSubmit={form.onSubmit((values) => {
         console.log(values);
-        
+
     })}>
-        <Select {...form.getInputProps('strokeType')} label="Stroke Type" name="strokeType" key={form.key("strokeType")} data={Object.values(EStrokeType).map((strokeType) => ({
-            value: strokeType,
-            label: strokeType
+        <Select {...form.getInputProps('strokeType')} label="Stroke Type" name="strokeType" key={form.key("strokeType")} data={Object.values(EStrokeType).filter((strokeType) => getStrokeTypeText(strokeType as EStrokeType)!=="Unknown").map((strokeType) => ({
+            value: strokeType.toString(),
+            label: getStrokeTypeText(strokeType as EStrokeType)
         }))} />
         <Button type="submit">Set Stroke Type</Button>
     </form>
