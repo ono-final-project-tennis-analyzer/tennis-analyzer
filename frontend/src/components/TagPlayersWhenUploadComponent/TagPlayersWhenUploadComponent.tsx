@@ -38,6 +38,9 @@ const TagPlayersWhenUploadComponent = ({ onSubmit,isOpen, setOpenModal }: TagPla
                 if (value === form.values.bottomPlayer) {
                     return "Top player cannot be the same as bottom player";
                 }
+                if (value !== getMe.data?.id.toString() && form.values.bottomPlayer !== getMe.data?.id.toString()) {
+                    return "Either top player or bottom player must be you";
+                }
                 return null;
             },
             bottomPlayer: (value) => {
@@ -47,8 +50,12 @@ const TagPlayersWhenUploadComponent = ({ onSubmit,isOpen, setOpenModal }: TagPla
                 if (value === form.values.topPlayer) {
                     return "Bottom player cannot be the same as top player";
                 }
+                if (value !== getMe.data?.id.toString() && form.values.topPlayer !== getMe.data?.id.toString()) {
+                    return "Either top player or bottom player must be you";
+                }
                 return null;
             }
+
         },
     });
     
