@@ -77,4 +77,24 @@ class VideoEventsStore:
         result = self.session.query(VideoEvents).filter(VideoEvents.video_id == video_id).delete()
         self.session.commit()
         
-        return result 
+        return result
+
+    def update_stroke_types(self, updates):
+        """
+        Update stroke types for multiple events
+        
+        Args:
+            updates (list): List of dictionaries containing event_id and stroke_type
+            
+        Returns:
+            list: List of updated VideoEvents objects
+        """
+        updated_events = []
+        for update in updates:
+            event = self.session.query(VideoEvents).filter(VideoEvents.id == update['event_id']).first()
+            if event:
+                event.stroke_type = update['stroke_type']
+                updated_events.append(event)
+        
+        self.session.commit()
+        return updated_events 

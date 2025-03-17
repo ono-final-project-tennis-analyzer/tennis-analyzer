@@ -3,6 +3,7 @@ from flask_login import login_required
 
 from db.models import create_session
 from db.stores.events_store import EventStore
+from db.stores.video_events_store import VideoEventsStore
 
 event_bp = Blueprint('event', __name__)
 
@@ -77,3 +78,32 @@ def update_event(event_id: int):
         return jsonify({"error": "Event not found"}), 404
 
     return jsonify(event), 200
+
+
+@event_bp.route('/stroke-types', methods=['PATCH'])
+@login_required
+def update_stroke_types():
+    """
+    Route to update stroke types for multiple video events.
+    Expects JSON payload with an array of objects containing event_id and stroke_type.
+    Example:
+    [
+        {
+            "event_id": 1,
+            "stroke_type": 1
+        }
+    ]
+    """
+    data = request.json
+    if not isinstance(data, list):
+        return jsonify({"error": "Request body must be an array"}), 400
+
+    for update in data:
+        if not isinstance(update, dict) or 'event_id' not in update or 'stroke_type' not in update:
+            return jsonify({"error": "Each update must contain event_id and stroke_type"}), 400
+
+    with create_session() as session:
+        store = VideoEventsStore(session)
+        updated_events = store.update_stroke_types(data)
+
+    return jsonify([event.to_dict() for event in updated_events]), 200
