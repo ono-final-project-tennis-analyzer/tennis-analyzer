@@ -27,7 +27,7 @@ export default function EventsTable({events, onSetStrokeType}: EventsTableProps)
               renderRow: (cell) => (
                 <>
                   {Object.values(EStrokeType).includes(cell.data.event_type as EStrokeType) ? (
-                    getStrokeTypeText(cell.data.event_type as EStrokeType) //Already has a stroke type
+                    getStrokeTypeText(cell.data.event_type  as EStrokeType) //Already has a stroke type
                   ) : Object.values(EVideoEventType).includes(cell.data.event_type as EVideoEventType) && //not a stroke type yet but is a video event type
                      cell.data.event_type as EVideoEventType != EVideoEventType.BallBounce //not a ball bounce so its a stroke type
                        ? (

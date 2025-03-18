@@ -20,7 +20,7 @@ export function useClassifyVideoStrokeTypeMutation(onSuccess?: (data: any) => vo
     const api = useRef(new Api());
     return useMutation({
         mutationFn: async (values: { stroke_type: number, event_id: number}[]) => {
-            const response = await api.current.patch(`/events/stroke-types`, values);
+            const response = await api.current.put(`/events/stroke-types`, values);
             return response.data;
         },
 

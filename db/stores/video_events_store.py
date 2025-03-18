@@ -98,3 +98,11 @@ class VideoEventsStore:
         
         self.session.commit()
         return updated_events 
+    
+    def find_by_id(self, id):
+        return self.session.query(VideoEvents).filter(VideoEvents.id == id).first()
+    
+    def find_by_video_id(self, video_id):
+        return self.session.query(VideoEvents).filter(VideoEvents.video_id == video_id).all()
+    
+    

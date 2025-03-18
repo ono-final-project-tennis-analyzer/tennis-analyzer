@@ -80,7 +80,7 @@ def update_event(event_id: int):
     return jsonify(event), 200
 
 
-@event_bp.route('/stroke-types', methods=['PATCH'])
+@event_bp.route('/stroke-types', methods=['PUT'])
 @login_required
 def update_stroke_types():
     """
@@ -94,16 +94,32 @@ def update_stroke_types():
         }
     ]
     """
-    data = request.json
-    if not isinstance(data, list):
-        return jsonify({"error": "Request body must be an array"}), 400
-
-    for update in data:
-        if not isinstance(update, dict) or 'event_id' not in update or 'stroke_type' not in update:
-            return jsonify({"error": "Each update must contain event_id and stroke_type"}), 400
-
     with create_session() as session:
-        store = VideoEventsStore(session)
-        updated_events = store.update_stroke_types(data)
-
-    return jsonify([event.to_dict() for event in updated_events]), 200
+        updated_events = []
+        for event_data in request.json:
+            event = VideoEventsStore(session).find_by_id(event_data['event_id'])
+            if event:
+                event.event_type = event_data['stroke_type']
+                
+                # Handle metadata serialization
+                metadata = {}
+                if event.metadata:
+                    if hasattr(event.metadata, 'position'):
+                        metadata['position'] = event.metadata.position
+                    if hasattr(event.metadata, 'raw_position'):
+                        metadata['raw_position'] = event.metadata.raw_position
+                
+                updated_events.append({
+                    'id': event.id,
+                    'video_id': event.video_id,
+                    'event_type': event.event_type,
+                    'frame_number': event.frame_number,
+                    'time_seconds': event.time_seconds,
+                    'time_string': event.time_string,
+                    'metadata': metadata,
+                    'created_at': str(event.created_at) if event.created_at else None,
+                    'updated_at': str(event.updated_at) if event.updated_at else None
+                })
+        session.commit()
+        
+        return jsonify(updated_events), 200

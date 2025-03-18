@@ -2,13 +2,16 @@ import { VideoEvent, EStrokeType, getStrokeTypeText } from "@/@types/VideoEvent"
 import { useClassifyVideoStrokeTypeMutation } from "@/services/event.service";
 import { Modal, Select, Button   } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { UseQueryResult } from "@tanstack/react-query";
+import { VideoEventQueryResponse } from "@/@types/VideoEvent";
 
 type StrokeTypeChooserProps = { 
   event: VideoEvent | undefined;
   setEvent: (event: VideoEvent | undefined) => void;
+  getVideoWithEventsQuery: UseQueryResult<VideoEventQueryResponse, Error>;
 }
 
-const StrokeTypeChooser = ({event,setEvent}: StrokeTypeChooserProps) => {
+const StrokeTypeChooser = ({event,setEvent, getVideoWithEventsQuery}: StrokeTypeChooserProps) => {
 const form = useForm({
     initialValues: {
         strokeType: null
@@ -30,6 +33,7 @@ const classifyVideoStrokeTypeMutation = useClassifyVideoStrokeTypeMutation();
             onSuccess: () => {
                 setEvent(undefined);
                 form.reset();
+                getVideoWithEventsQuery.refetch();
             }
         });
     })}>

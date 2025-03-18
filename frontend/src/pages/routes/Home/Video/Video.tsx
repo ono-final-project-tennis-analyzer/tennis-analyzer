@@ -62,7 +62,7 @@ export default function Video() {
           setEvent(event);
         }} events={getVideoWithEventsQuery.data?.data.data.video_events ?? []} />
 
-        <StrokeTypeChooser event={event} setEvent={setEvent} />
+        <StrokeTypeChooser getVideoWithEventsQuery={getVideoWithEventsQuery} event={event} setEvent={setEvent} />
       </Grid.Col>
     </Grid>
   );
