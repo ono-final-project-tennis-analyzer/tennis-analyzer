@@ -39,4 +39,8 @@ export default class Api {
   delete(url: string, config?: any): Promise<AxiosResponse<any>> {
     return this.client.delete(url, config);
   }
+
+  patch(url: string, data?: any, config?: any): Promise<AxiosResponse<any>> {
+    return this.client.patch(url, data, config);
+  }
 }

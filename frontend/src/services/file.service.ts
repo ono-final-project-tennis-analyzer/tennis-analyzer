@@ -27,3 +27,4 @@ export function useUploadFileMutation(onSuccess?: (data: any) => void) {
 
     })
 }
+
