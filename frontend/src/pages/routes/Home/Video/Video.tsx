@@ -8,9 +8,11 @@ import VideoTopControls from "./Components/VideoTopControls";
 import { useParams } from "react-router-dom";
 import { useGetVideoWithEventsQuery, useStreamVideoQuery } from "@/services/videos.service.ts";
 import { useVideoContext } from "./context";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { VideoEvent } from "@/@types/VideoEvent";
 import StrokeTypeChooser from "./Components/StrokeTypeChooser";
+import StrokeTypesChartCard from '../../Home/Overview/components/StrokeTypesChartCard/StrokeTypesChartCard';
+import { EStrokeType } from "@/@types/VideoEvent";
 
 export default function Video() {
   const { id } = useParams();
@@ -25,6 +27,21 @@ export default function Video() {
       setUrl(streamUrl);
     }
   }, [streamUrl, setUrl]);
+
+  const strokeTypes = useMemo(() => {
+    // First filter for only stroke type events
+    const strokeEvents = videoEvents.filter((event) => 
+      Object.values(EStrokeType).includes(event.event_type as EStrokeType)
+    );
+
+    // Then reduce to count by type
+    return strokeEvents.reduce((acc: { [key: string]: number }, event) => {
+      if (event.event_type) {
+        acc[event.event_type] = (acc[event.event_type] || 0) + 1;
+      }
+      return acc;
+    }, {});
+  }, [videoEvents]);
 
   if(getVideoWithEventsQuery.isLoading){
     return <Loader />
@@ -45,7 +62,7 @@ export default function Video() {
           <Grid.Col span={3} style={{ maxHeight: "500px" }}>
             <Grid gutter="md">
               <Grid.Col span={12}>
-                <ForendBackendChart videoEvents={videoEvents} />
+                <StrokeTypesChartCard strokeTypes={strokeTypes} />
               </Grid.Col>
             </Grid>
           </Grid.Col>

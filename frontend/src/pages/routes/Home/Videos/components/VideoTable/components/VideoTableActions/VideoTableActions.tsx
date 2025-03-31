@@ -5,10 +5,13 @@ import Dropzone from "@/components/Dropzone";
 import { useUploadFileMutation } from "@/services/file.service.ts";
 import useFakeProgress from "@/hooks/useFakeProgress.ts";
 import { useDisclosure } from "@mantine/hooks";
+import TagPlayersWhenUploadComponent from "@/components/TagPlayersWhenUploadComponent/TagPlayersWhenUploadComponent";
 
 const VideoTableActions: React.FC = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const [isUploading, setUploading] = useState(false);
+  const [tagPlayersModal, setTagPlayersModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const progress = useFakeProgress(isUploading, { minSpeed: 5, maxSpeed: 20 });
 
@@ -20,8 +23,20 @@ const VideoTableActions: React.FC = () => {
   });
 
   const onUpload = (file: File) => {
-    uploadFile.mutate(file);
-    setUploading(true);
+    setSelectedFile(file);
+    setTagPlayersModal(true);
+  };
+
+  const onSubmit = (topPlayer: number, bottomPlayer: number) => {
+    if (selectedFile) {
+      uploadFile.mutate({
+        bottom_player_account_id: bottomPlayer,
+        top_player_account_id: topPlayer,
+        video: selectedFile
+      });
+      setUploading(true);
+      setTagPlayersModal(false);
+    }
   };
 
   return (
@@ -50,6 +65,12 @@ const VideoTableActions: React.FC = () => {
           </div>
         )}
       </Modal>
+
+      <TagPlayersWhenUploadComponent 
+        isOpen={tagPlayersModal} 
+        onSubmit={onSubmit} 
+        setOpenModal={setTagPlayersModal} 
+      />
     </Group>
   );
 };
