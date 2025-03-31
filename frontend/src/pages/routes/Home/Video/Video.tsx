@@ -17,6 +17,8 @@ export default function Video() {
   const getVideoWithEventsQuery = useGetVideoWithEventsQuery(id);
   const { streamUrl } = useStreamVideoQuery(id);
   const { setUrl } = useVideoContext();
+  const videoEvents = getVideoWithEventsQuery.data?.data.data.video_events ?? [];
+  const [event, setEvent] = useState<VideoEvent | undefined>(undefined);
 
   useEffect(() => {
     if (streamUrl) {
@@ -28,8 +30,7 @@ export default function Video() {
     return <Loader />
   }
 
-  const videoEvents = getVideoWithEventsQuery.data?.data.data.video_events ?? [];
-  const [event, setEvent] = useState<VideoEvent | undefined>(undefined);
+ 
   return (
     <Grid gutter="md">
       <Grid.Col span={12}>
