@@ -39,7 +39,7 @@ def handle_account(account_id):
 
 @account_bp.route('/login', methods=['POST'])
 def login():
-    data = request.get_json()
+    data = request.get_json()   
 
     user = account_store.login(data['email'], data['password'])
     if user:

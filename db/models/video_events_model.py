@@ -14,6 +14,7 @@ class VideoEvents(BaseModel):
     time_seconds = Column(Float, nullable=False)  # Time in seconds from the start of the video
     time_string = Column(String, nullable=False)  # Time in HH:MM:SS.ms format
     event_metadata = Column(JSON, nullable=True)  # For storing additional data like position coordinates
+    stroke_type = Column(Integer, nullable=True)  # For storing stroke type
 
     # Relationship with Videos table
     video = relationship("Videos", back_populates="video_events") 

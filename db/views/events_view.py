@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify
-from flask_login import login_required
+from flask_login import login_required, current_user
+from sqlalchemy import func
 
-from db.models import create_session
+from db.models import create_session, VideoEvents, Videos
 from db.stores.events_store import EventStore
 from db.stores.video_events_store import VideoEventsStore
 
@@ -123,3 +124,32 @@ def update_stroke_types():
         session.commit()
         
         return jsonify(updated_events), 200
+
+
+@event_bp.route('/stroke-types/stats', methods=['GET'])
+@login_required
+def get_stroke_type_stats():
+    """
+    Get statistics about stroke types across all videos for the logged in user.
+    Returns a dictionary where keys are stroke types and values are their total count.
+    """
+    with create_session() as session:
+        # Get all stroke types and their counts for the user's videos
+        stats = (
+            session.query(
+                VideoEvents.stroke_type,
+                func.count(VideoEvents.id).label('count')
+            )
+            .join(Videos, VideoEvents.video_id == Videos.id)
+            .filter(
+                Videos.account_id == current_user.id,
+                VideoEvents.stroke_type.is_not(None)  # Only count events with stroke types
+            )
+            .group_by(VideoEvents.stroke_type)
+            .all()
+        )
+        
+        # Convert to dictionary format
+        result = {str(stat.stroke_type): stat.count for stat in stats}
+        
+        return jsonify(result), 200
