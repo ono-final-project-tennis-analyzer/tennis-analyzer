@@ -133,24 +133,23 @@ def get_stroke_type_stats():
     Get statistics about stroke types across all videos for the logged in user.
     Returns a dictionary where keys are stroke types and values are their total count.
     """
+    # Define valid stroke types from EStrokeType enum
+    valid_stroke_types = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+    
     with create_session() as session:
-        # Get all stroke types and their counts for the user's videos
         stats = (
             session.query(
-                VideoEvents.stroke_type,
+                VideoEvents.event_type,
                 func.count(VideoEvents.id).label('count')
             )
             .join(Videos, VideoEvents.video_id == Videos.id)
             .filter(
                 Videos.account_id == current_user.id,
-                VideoEvents.stroke_type.is_not(None)  # Only count events with stroke types
+                VideoEvents.event_type.in_(valid_stroke_types)
             )
-            .group_by(VideoEvents.stroke_type)
+            .group_by(VideoEvents.event_type)
             .all()
         )
         
-        # Convert to dictionary format
-        
-        result = {str(stat.stroke_type): stat.count for stat in stats}
-        
+        result = {str(stat.event_type): stat.count for stat in stats}
         return jsonify(result), 200
