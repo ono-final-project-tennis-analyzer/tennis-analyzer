@@ -9,9 +9,11 @@ import MatchOutcomeChartCard from "./components/MatchOutcomeChartCard";
 import { TennisPlaygroundMap } from "@/components/tennis-playground-map/tennis-playground-map.component";
 import PlayGroundTest from "./components/PlayGroundTest";
 import StatComponent from "./components/StatComponentChartCard";
+import { useGetStrokeTypeStats } from "@/services/event.service";
+import { EStrokeType, getStrokeTypeColor } from "@/@types/VideoEvent";
 
 export default function Overview() {
-
+const getStrokeTypesQuery= useGetStrokeTypeStats();
   return (
     <Grid gutter="md">
       <Grid.Col span={12}>
@@ -27,6 +29,13 @@ export default function Overview() {
           </Grid.Col>
         </Grid>
       </Grid.Col>
+
+      {getStrokeTypesQuery.data && (Object.entries(getStrokeTypesQuery.data).map(([strokeType, count]) => (
+        <Grid.Col span={2}>
+          <StatComponent title={strokeType} value={count} percentage={50} color={getStrokeTypeColor(strokeType as EStrokeType)} />
+        </Grid.Col>
+      )))}  
+
       <Grid.Col span={2}>
         {/* <ServeSpeedChart /> */}
         <StatComponent title={"Forent Count"} value={100} percentage={50} color="red" />

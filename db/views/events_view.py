@@ -150,6 +150,7 @@ def get_stroke_type_stats():
         )
         
         # Convert to dictionary format
+        
         result = {str(stat.stroke_type): stat.count for stat in stats}
         
         return jsonify(result), 200

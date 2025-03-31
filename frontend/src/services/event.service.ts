@@ -30,4 +30,15 @@ export function useClassifyVideoStrokeTypeMutation(onSuccess?: (data: any) => vo
 
     })
 }
+export function useGetStrokeTypeStats() {
+    const api = useRef(new Api());
+    return useQuery({
+        queryKey: ["stroke-type-stats"],
+        queryFn: async () => {
+            return await api.current.get(`events/stroke-types/stats`);
+        },
+        select: ({data}:any) => data as { [key: string]: number },
+    });
+}
+    
     
