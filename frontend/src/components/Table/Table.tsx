@@ -20,7 +20,7 @@ export default function Table<T extends BaseCellData>({
   onSelectionChange,
   actions,
   columns,
-  searchable,
+  searchable = true,
   rightSection,
   defaultSort,
   suggestionKeys,
@@ -62,16 +62,20 @@ export default function Table<T extends BaseCellData>({
     pageSize,
   });
 
+  console.log("searchable", searchable)
+
   return (
     <div className={cx(Styles.container, className)}>
-      <TableTop
-        searchValue={searchValue}
-        setSearchValue={setSearchValue}
-        suggestions={suggestions}
-        rightSection={rightSection}
-        searchable={searchable}
-        resultCount={sortedData.length}
-      />
+      {searchable ? (
+        <TableTop
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+          suggestions={suggestions}
+          rightSection={rightSection}
+          searchable={searchable}
+          resultCount={sortedData.length}
+        />
+      ) : null}
       <ScrollArea className={Styles.tableContainer}>
         <TableM miw={800} verticalSpacing="sm" className={Styles.table}>
           <TableHead<T>

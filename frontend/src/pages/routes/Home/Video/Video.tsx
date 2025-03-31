@@ -6,12 +6,15 @@ import Score from "./Components/Score/Score";
 import EventsTable from "./Components/EventsTable/EventsTable";
 import VideoTopControls from "./Components/VideoTopControls";
 import { useParams } from "react-router-dom";
-import { useGetVideoWithEventsQuery, useStreamVideoQuery } from "@/services/videos.service.ts";
+import {
+  useGetVideoWithEventsQuery,
+  useStreamVideoQuery,
+} from "@/services/videos.service.ts";
 import { useVideoContext } from "./context";
 import { useEffect, useState, useMemo } from "react";
 import { VideoEvent } from "@/@types/VideoEvent";
 import StrokeTypeChooser from "./Components/StrokeTypeChooser";
-import StrokeTypesChartCard from '../../Home/Overview/components/StrokeTypesChartCard/StrokeTypesChartCard';
+import StrokeTypesChartCard from "../../Home/Overview/components/StrokeTypesChartCard/StrokeTypesChartCard";
 import { EStrokeType } from "@/@types/VideoEvent";
 
 export default function Video() {
@@ -19,7 +22,8 @@ export default function Video() {
   const getVideoWithEventsQuery = useGetVideoWithEventsQuery(id);
   const { streamUrl } = useStreamVideoQuery(id);
   const { setUrl } = useVideoContext();
-  const videoEvents = getVideoWithEventsQuery.data?.data.data.video_events ?? [];
+  const videoEvents =
+    getVideoWithEventsQuery.data?.data.data.video_events ?? [];
   const [event, setEvent] = useState<VideoEvent | undefined>(undefined);
 
   useEffect(() => {
@@ -30,8 +34,8 @@ export default function Video() {
 
   const strokeTypes = useMemo(() => {
     // First filter for only stroke type events
-    const strokeEvents = videoEvents.filter((event) => 
-      Object.values(EStrokeType).includes(event.event_type as EStrokeType)
+    const strokeEvents = videoEvents.filter((event) =>
+      Object.values(EStrokeType).includes(event.event_type as EStrokeType),
     );
 
     // Then reduce to count by type
@@ -43,11 +47,10 @@ export default function Video() {
     }, {});
   }, [videoEvents]);
 
-  if(getVideoWithEventsQuery.isLoading){
-    return <Loader />
+  if (getVideoWithEventsQuery.isLoading) {
+    return <Loader />;
   }
 
- 
   return (
     <Grid gutter="md">
       <Grid.Col span={12}>
@@ -72,12 +75,16 @@ export default function Video() {
         </Grid>
       </Grid.Col>
       <Grid.Col span={12}>
-        <EventsTable onSetStrokeType={(event: VideoEvent)=>{
-          console.log("user clicked set stroke type to event : ", event);
-          setEvent(event);
-        }} events={getVideoWithEventsQuery.data?.data.data.video_events ?? []} />
+        <EventsTable
+          onSetStrokeType={setEvent}
+          events={getVideoWithEventsQuery.data?.data.data.video_events ?? []}
+        />
 
-        <StrokeTypeChooser getVideoWithEventsQuery={getVideoWithEventsQuery} event={event} setEvent={setEvent} />
+        <StrokeTypeChooser
+          getVideoWithEventsQuery={getVideoWithEventsQuery}
+          event={event}
+          setEvent={setEvent}
+        />
       </Grid.Col>
     </Grid>
   );

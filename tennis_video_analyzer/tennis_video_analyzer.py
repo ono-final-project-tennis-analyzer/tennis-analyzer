@@ -4,6 +4,8 @@ import argparse
 import cv2
 import torch
 
+from tennis_video_analyzer.helpers.video_converter import VideoConverter
+
 # Add the parent directory to sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -540,8 +542,14 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
             print("\nEvents dictionary with time values:")
             for event_name, time_values in time_values_dict.items():
                 print(f"{event_name}: {time_values}")
+
+            # Stage 5: Uploading Processed Video
+            print(f"convert video to correct format")
+            progress_tracker.update_progress(0, stage="Converting Video")
+            output_path = VideoConverter(output_path).convert_to_h264()
+
             print(f'trying to upload video')
-            # Stage 4: Uploading Processed Video
+            # Stage 5: Uploading Processed Video
             if event_id and video_id:
                 progress_tracker.update_progress(0, stage="Uploading Video")
                 upload_processed_video(event_id, video_id, output_path, session)

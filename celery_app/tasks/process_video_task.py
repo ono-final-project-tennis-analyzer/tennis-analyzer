@@ -11,10 +11,8 @@ class ProcessVideoMeta(TypedDict):
     account_id: int
     event_id: int
 
-
-
 @app.task()
-def process_video_task(meta: TypedDict):
+def process_video_task(meta: ProcessVideoMeta):
     print(f"Read Task Test: started with {meta=}")
 
     try:

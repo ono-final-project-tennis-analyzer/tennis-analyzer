@@ -9,7 +9,9 @@ const VideoPlayer: React.FC = () => {
     videoURL,
     autoPlay,
     setVideoRef,
-    state: { muted },
+    playVideo,
+    pauseVideo,
+    state: { muted, isPlaying },
   } = useVideoContext();
 
   useEffect(() => {
@@ -24,6 +26,7 @@ const VideoPlayer: React.FC = () => {
         autoPlay={autoPlay}
         className={styles.video}
         muted={muted}
+        onClick={isPlaying ? pauseVideo : playVideo}
       />
     </Card>
   );

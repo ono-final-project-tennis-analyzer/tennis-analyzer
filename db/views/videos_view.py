@@ -179,13 +179,13 @@ def stream_video_content(video_id: int):
                 abort(404, description="Video file not found")
 
             # Stream the video
-            video_stream = storage_client.stream_file(video.account_id, file_name)
+            video_stream = storage_client.stream_file(video.account_id, f"processed_{file_name}")
             file_bytes = video_stream.read()
             video_stream.close()
 
             return send_file(
                 io.BytesIO(file_bytes),
-                mimetype="video/mp4"
+                mimetype="video/mp4",
             )
 
     except Exception as e:

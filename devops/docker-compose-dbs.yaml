@@ -5,8 +5,8 @@ services:
     image: minio/minio:latest
     container_name: minio
     ports:
-      - '9000:9000'
-      - '9001:9001' # Console port
+      - '9100:9000'   # <== changed
+      - '9101:9001'   # Console stays the same
     volumes:
       - ./minio-data:/data
     environment:

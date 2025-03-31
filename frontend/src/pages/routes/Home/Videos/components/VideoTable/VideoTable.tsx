@@ -101,7 +101,6 @@ const VideoTable: React.FC<{ data: Video[] }> = ({ data }) => {
       columns={columns}
       actions={actions}
       pageSize={10}
-      searchable={true}
       noResultsText="No videos found."
       rightSection={<VideoTableActions />}
     />
