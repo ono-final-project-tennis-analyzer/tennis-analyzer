@@ -10,6 +10,7 @@ import { TennisPlaygroundMap } from "@/components/tennis-playground-map/tennis-p
 import PlayGroundTest from "./components/PlayGroundTest";
 
 export default function Overview() {
+  
   return (
     <Grid gutter="md">
       <Grid.Col span={12}>
@@ -26,13 +27,13 @@ export default function Overview() {
         </Grid>
       </Grid.Col>
       <Grid.Col span={6}>
-        <ServeSpeedChart />
+        {/* <ServeSpeedChart /> */}
       </Grid.Col>
       <Grid.Col span={4}>
-        <AccuracyChartCard />
+        {/* <AccuracyChartCard /> */}
       </Grid.Col>
       <Grid.Col span={4}>
-        <StrokeTypesChartCard />
+        <StrokeTypesChartCard  />
       </Grid.Col>
       <Grid.Col span={4}>
         <MatchOutcomeChartCard />

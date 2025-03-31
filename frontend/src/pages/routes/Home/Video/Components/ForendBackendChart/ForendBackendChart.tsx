@@ -1,9 +1,21 @@
 import { PieChart } from "@mantine/charts";
 import { useEffect, useRef, useState } from "react";
+import { VideoEvent, EStrokeType, getStrokeTypeText, getStrokeTypeColor } from "@/@types/VideoEvent";
 
-export default function ForehandBackendChart() {
+interface ForendBackendChartProps {
+  videoEvents: VideoEvent[];
+}
+
+export default function ForendBackendChart({ videoEvents }: ForendBackendChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 300, height: 300 }); // Default size
+
+  const hitEvents = videoEvents.filter((event: VideoEvent) => Object.values(EStrokeType).includes(event.event_type as EStrokeType));
+
+  const hitEventsByStrokeType = hitEvents.reduce((acc: Record<EStrokeType, number>, event: VideoEvent) => {
+    acc[event.event_type as EStrokeType] = (acc[event.event_type as EStrokeType] || 0) + 1;
+    return acc;
+  }, Object.values(EStrokeType).reduce((acc, type) => ({ ...acc, [type]: 0 }), {} as Record<EStrokeType, number>));
 
   useEffect(() => {
     const observer = new ResizeObserver(() => {
@@ -22,13 +34,18 @@ export default function ForehandBackendChart() {
     return () => observer.disconnect();
   }, []);
 
+
+
+
+
   return (
     <div ref={containerRef} style={{ width: "100%", height: "300px" }}>
       <PieChart
-        data={[
-          { name: "Forehand", value: 10, color: "red" },
-          { name: "Backhand", value: 20, color: "blue" },
-        ]}
+        data={Object.entries(hitEventsByStrokeType).map(([strokeType, count]) => ({     
+          name: getStrokeTypeText(strokeType as EStrokeType),
+          value: count,
+          color: getStrokeTypeColor(strokeType as EStrokeType),
+        }))}
         w={size.width}
         h={size.height}
         withLabels

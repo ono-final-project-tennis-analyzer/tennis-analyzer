@@ -90,3 +90,33 @@ export function getVideoEventTypeText(videoEventType: EVideoEventType){
       return 'Unknown';
   }
 }
+
+
+export function getStrokeTypeColor(strokeType: EStrokeType): string {
+  switch (strokeType) {
+    case EStrokeType.Forehand:
+      return "red";
+    case EStrokeType.Backhand:
+      return "blue";
+    case EStrokeType.Serve:
+      return "green";
+    case EStrokeType.ForehandVolley:
+      return "yellow";
+    case EStrokeType.BackhandVolley:
+      return "orange";  
+    case EStrokeType.BackhandSlice:
+      return "purple";
+    case EStrokeType.ForehandSlice:
+      return "pink";
+    case EStrokeType.ServeSlice:
+      return "brown";
+    case EStrokeType.DropShot:
+      return "gray";
+    case EStrokeType.Smash:
+      return "black";
+    case EStrokeType.Net:
+      return "white";
+    default:
+      return "gray";
+  }
+}
