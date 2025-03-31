@@ -20,7 +20,7 @@ export default function StatComponent({ title, value, color, icon , percentage }
         sections={[{ value: percentage, color: color }]}
         label={
           <Center>
-            {icon}
+            {icon?? <img src="/tennis_logo.svg" alt="tennis" />}
           </Center>
         }
       />
