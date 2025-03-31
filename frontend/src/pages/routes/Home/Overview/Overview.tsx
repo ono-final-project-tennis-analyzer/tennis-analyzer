@@ -50,10 +50,6 @@ const getStrokeTypesQuery= useGetStrokeTypeStats();
         <MatchOutcomeChartCard />
       </Grid.Col>
 
-      <Grid.Col span={12}>
-
-        
-      </Grid.Col>
     </Grid>
   );
 }
