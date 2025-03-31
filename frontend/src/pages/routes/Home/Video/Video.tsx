@@ -47,9 +47,6 @@ export default function Video() {
               <Grid.Col span={12}>
                 <ForendBackendChart videoEvents={videoEvents} />
               </Grid.Col>
-              {/* <Grid.Col span={12}> */}
-                {/* <Score Player1Score={0} Player2Score={0} /> */}
-              {/* </Grid.Col> */}
             </Grid>
           </Grid.Col>
           <Grid.Col span={4} style={{ maxHeight: "500px" }}>

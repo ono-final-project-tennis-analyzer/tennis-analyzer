@@ -29,19 +29,19 @@ const getStrokeTypesQuery= useGetStrokeTypeStats();
           </Grid.Col>
         </Grid>
       </Grid.Col>
-
+      <Grid.Col span={6}>
+        <StrokeTypesChartCard strokeTypes={getStrokeTypesQuery.data ?? {}} />
+      </Grid.Col>
+      <Grid.Col span={6}>
+        <MatchOutcomeChartCard />
+      </Grid.Col>
       {getStrokeTypesQuery.data && (Object.entries(getStrokeTypesQuery.data).map(([strokeType, count]) => (
         <Grid.Col span={2}>
           <StatComponent title={getStrokeTypeText(strokeType as EStrokeType)} value={count} percentage={50} color={getStrokeTypeColor(strokeType as EStrokeType)} />
         </Grid.Col>
       )))}  
 
-      <Grid.Col span={4}>
-        <StrokeTypesChartCard  />
-      </Grid.Col>
-      <Grid.Col span={4}>
-        <MatchOutcomeChartCard />
-      </Grid.Col>
+
 
     </Grid>
   );

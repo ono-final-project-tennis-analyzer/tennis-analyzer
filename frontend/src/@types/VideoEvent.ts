@@ -115,7 +115,7 @@ export function getStrokeTypeColor(strokeType: EStrokeType): string {
     case EStrokeType.Smash:
       return "black";
     case EStrokeType.Net:
-      return "white";
+      return "cyan";
     default:
       return "gray";
   }
