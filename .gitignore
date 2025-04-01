@@ -170,3 +170,5 @@ celerybeat-schedule.bak
 celerybeat-schedule.dat
 celerybeat-schedule.db
 celerybeat-schedule.dir
+
+video/*
