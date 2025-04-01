@@ -22,7 +22,7 @@ def process_video_task(meta: ProcessVideoMeta):
         
             print(f"target event: {event.id}")
 
-            process_video(event_id=event.id)
+            process_video(event_id=event.id, draw_ball_trace=True)
     except Exception as e:
         print(f"Error: {e}")
         store.update_event(meta['event_id'], stage="error", progress=100)

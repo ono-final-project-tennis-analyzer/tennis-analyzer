@@ -262,7 +262,7 @@ def normalize_ball_bounce_position(ball_coordinates, frame, court_detector):
     return metadata
 
 
-def save_video_events(session, event_id, video_id, bottom_player_strokes_indices, top_player_strokes_indices, bounces_indices, fps, ball_coordinates=None, court_detector=None):
+def save_video_events(session, event_id, video_id, bottom_player_strokes_indices, top_player_strokes_indices, bounces_indices, fps, ball_coordinates=None, court_detector=None, bottom_player_stroke_types=None, top_player_stroke_types=None):
     """
     Save the detected events to the database
     
@@ -276,6 +276,8 @@ def save_video_events(session, event_id, video_id, bottom_player_strokes_indices
         fps (float): Frames per second of the video
         ball_coordinates (list): List of ball coordinates (x, y) for each frame
         court_detector: Court detector object with court dimensions
+        bottom_player_stroke_types (list): List of stroke types (0=forehand, 1=backhand) for bottom player
+        top_player_stroke_types (list): List of stroke types (0=forehand, 1=backhand) for top player
     """
     if not video_id:
         print("No video ID provided, skipping saving events to database")
@@ -293,32 +295,38 @@ def save_video_events(session, event_id, video_id, bottom_player_strokes_indices
         # Delete any existing events for this video_id
         video_events_store.delete_video_events_by_video_id(video_id)
         print('deleted events for video_id: ', video_id)
+        
         # Save bottom player strokes
-        for frame in bottom_player_strokes_indices:
+        for i, frame in enumerate(bottom_player_strokes_indices):
             try:
-                # Convert NumPy types to standard Python types
                 frame_number = int(frame) if hasattr(frame, 'item') else int(frame)
                 time_seconds = float(frame_number) / fps
                 time_string = frame_to_time(frame_number, fps)
-                print(f'creating event for frame {frame_number}')
+                
+                # Get stroke type if available
+                stroke_type = bottom_player_stroke_types[i] if bottom_player_stroke_types else None
+                
                 video_events_store.create_video_event(
                     video_id=video_id,
                     event_type='bottom_player_stroke',
                     frame_number=frame_number,
                     time_seconds=time_seconds,
                     time_string=time_string,
-                    event_metadata={}
+                    event_metadata={},
+                    stroke_type=stroke_type
                 )
             except Exception as e:
                 print(f"Error saving bottom player stroke event for frame {frame}: {str(e)}")
         
         # Save top player strokes
-        for frame in top_player_strokes_indices:
+        for i, frame in enumerate(top_player_strokes_indices):
             try:
-                # Convert NumPy types to standard Python types
                 frame_number = int(frame) if hasattr(frame, 'item') else int(frame)
                 time_seconds = float(frame_number) / fps
                 time_string = frame_to_time(frame_number, fps)
+                
+                # Get stroke type if available
+                stroke_type = top_player_stroke_types[i] if top_player_stroke_types else None
                 
                 video_events_store.create_video_event(
                     video_id=video_id,
@@ -326,7 +334,8 @@ def save_video_events(session, event_id, video_id, bottom_player_strokes_indices
                     frame_number=frame_number,
                     time_seconds=time_seconds,
                     time_string=time_string,
-                    event_metadata={}
+                    event_metadata={},
+                    stroke_type=str(stroke_type)
                 )
             except Exception as e:
                 print(f"Error saving top player stroke event for frame {frame}: {str(e)}")
@@ -467,7 +476,7 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
 
                 if court_detector.success_flag:
                     try:
-                        clone_frame = court_detector.add_court_overlay(clone_frame)
+                        clone_frame = court_detector.add_court_overlay(clone_frame, overlay_color=(0, 0, 255))
                     except Exception:
                         need_court_detection = True
 
@@ -506,13 +515,13 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
             df_smooth_bottom = smoother.smooth(df_bottom)
             smoother.save_to_csv('video', player_id=1)
 
-            bottom_player_strokes_indices, top_player_strokes_indices, bounces_indices = find_strokes_indices(
+            bottom_player_strokes_indices, top_player_strokes_indices, bounces_indices, bottom_player_stroke_types, top_player_stroke_types = find_strokes_indices(
                 player_detector.bottom_player_boxes,
                 player_detector.top_player_boxes,
                 ball_detector.xy_coordinates,
                 df_smooth_bottom)
 
-            print(f'bottom_player_strokes_indices: {bottom_player_strokes_indices}, top_player_strokes_indices: {top_player_strokes_indices}, bounces_indices: {bounces_indices}')
+            print(f'bottom_player_strokes_indices: {bottom_player_strokes_indices}, top_player_strokes_indices: {top_player_strokes_indices}, bounces_indices: {bounces_indices}, bottom_player_stroke_types: {bottom_player_stroke_types}, top_player_stroke_types: {top_player_stroke_types}')
             
             # Convert frame indices to time values
             print("\nTime values for detected events:")
@@ -565,7 +574,9 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
                     bounces_indices, 
                     fps,
                     ball_detector.xy_coordinates,
-                    court_detector
+                    court_detector,
+                    bottom_player_stroke_types,
+                    top_player_stroke_types
                 )
                 progress_tracker.update_progress(100, stage="Uploading Video")
             elif event_id:
@@ -584,78 +595,78 @@ def process_video(event_id=0, video_path=None, output_path="video/test.output.mp
             raise  # Re-raise the exception for further handling
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Tennis Video Analyzer')
-    parser.add_argument('--video_path', type=str, help='Path to the video file (local file to upload)')
-    parser.add_argument('--video_out_path', type=str, default='video/test.output.mp4', help='Path to the output video file')
-    parser.add_argument('--event_id', type=int, default=0, help='Event ID for database operations')
-    parser.add_argument('--draw_ball_trace', action='store_true', help='Draw ball trace on the output video')
-    parser.add_argument('--ball_trace_length', type=int, default=7, help='Length of the ball trace')
-    parser.add_argument('--create_test_data', action='store_true', help='Create test event and video data')
-    args = parser.parse_args()
+# if __name__ == '__main__':
+#     parser = argparse.ArgumentParser(description='Tennis Video Analyzer')
+#     parser.add_argument('--video_path', type=str, help='Path to the video file (local file to upload)')
+#     parser.add_argument('--video_out_path', type=str, default='video/test.output.mp4', help='Path to the output video file')
+#     parser.add_argument('--event_id', type=int, default=0, help='Event ID for database operations')
+#     parser.add_argument('--draw_ball_trace', action='store_true', help='Draw ball trace on the output video')
+#     parser.add_argument('--ball_trace_length', type=int, default=7, help='Length of the ball trace')
+#     parser.add_argument('--create_test_data', action='store_true', help='Create test event and video data')
+#     args = parser.parse_args()
 
-    # Create test data if requested
-    if args.create_test_data:
-        with with_session() as session:
-            # Create a test event
-            event_store = EventStore(session)
+#     # Create test data if requested
+#     if args.create_test_data:
+#         with with_session() as session:
+#             # Create a test event
+#             event_store = EventStore(session)
             
-            # Check if we have a local video file to upload
-            local_video_path = args.video_path
-            if not local_video_path or not os.path.exists(local_video_path):
-                print("Warning: No valid local video file provided for upload. Using default test data.")
-                file_name = "input.mp4"
-            else:
-                # Use the filename from the provided path
-                file_name = os.path.basename(local_video_path)
+#             # Check if we have a local video file to upload
+#             local_video_path = args.video_path
+#             if not local_video_path or not os.path.exists(local_video_path):
+#                 print("Warning: No valid local video file provided for upload. Using default test data.")
+#                 file_name = "input.mp4"
+#             else:
+#                 # Use the filename from the provided path
+#                 file_name = os.path.basename(local_video_path)
             
-            # Create the event with the file name in metadata
-            created_event = event_store.create_event("test_tennis_analysis", "1", {
-                "account_id": "1",
-                "file_name": file_name,
-            })
+#             # Create the event with the file name in metadata
+#             created_event = event_store.create_event("test_tennis_analysis", "1", {
+#                 "account_id": "1",
+#                 "file_name": file_name,
+#             })
             
-            # Upload the video to MinIO if a local file was provided
-            if local_video_path and os.path.exists(local_video_path):
-                storage_client = StorageClient()
-                try:
-                    result = storage_client.upload_file("1", local_video_path, file_name)
-                    print(f"Uploaded video to MinIO: {result.object_name}")
-                except Exception as e:
-                    print(f"Failed to upload video to MinIO: {str(e)}")
-                    print("Continuing with test data creation...")
+#             # Upload the video to MinIO if a local file was provided
+#             if local_video_path and os.path.exists(local_video_path):
+#                 storage_client = StorageClient()
+#                 try:
+#                     result = storage_client.upload_file("1", local_video_path, file_name)
+#                     print(f"Uploaded video to MinIO: {result.object_name}")
+#                 except Exception as e:
+#                     print(f"Failed to upload video to MinIO: {str(e)}")
+#                     print("Continuing with test data creation...")
             
-            # Create a test video record
-            from db.stores.videos_store import VideosStore
-            from datetime import datetime
-            videos_store = VideosStore(session)
-            video = videos_store.create_video(
-                event_id=created_event.id,
-                account_id="1",
-                video_path=f"1/{file_name}",  # MinIO path format: account_id/file_name
-                name=f"Test Tennis Video - {file_name}",
-                upload_date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                status=0
-            )
+#             # Create a test video record
+#             from db.stores.videos_store import VideosStore
+#             from datetime import datetime
+#             videos_store = VideosStore(session)
+#             video = videos_store.create_video(
+#                 event_id=created_event.id,
+#                 account_id="1",
+#                 video_path=f"1/{file_name}",  # MinIO path format: account_id/file_name
+#                 name=f"Test Tennis Video - {file_name}",
+#                 upload_date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+#                 status=0
+#             )
             
-            print(f"Created test event with ID {created_event.id} and video with ID {video.id}")
+#             print(f"Created test event with ID {created_event.id} and video with ID {video.id}")
             
-            # Use the created event ID if no event ID was provided
-            if args.event_id == 0:
-                args.event_id = created_event.id
-                print(f"Using created event ID: {args.event_id}")
+#             # Use the created event ID if no event ID was provided
+#             if args.event_id == 0:
+#                 args.event_id = created_event.id
+#                 print(f"Using created event ID: {args.event_id}")
 
-    # Process the video
-    try:
-        print('processing video')
-        process_video(
-            event_id=args.event_id,
-            video_path=args.video_path,
-            output_path=args.video_out_path,
-            draw_ball_trace=args.draw_ball_trace,
-            ball_trace_length=args.ball_trace_length
-        )
-    except Exception as e:
-        print(f"Error processing video: {str(e)}")
-        import traceback
-        traceback.print_exc()
+#     # Process the video
+#     try:
+#         print('processing video')
+#         process_video(
+#             event_id=args.event_id,
+#             video_path=args.video_path,
+#             output_path=args.video_out_path,
+#             draw_ball_trace=args.draw_ball_trace,
+#             ball_trace_length=args.ball_trace_length
+#         )
+#     except Exception as e:
+#         print(f"Error processing video: {str(e)}")
+#         import traceback
+#         traceback.print_exc()

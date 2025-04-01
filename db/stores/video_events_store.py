@@ -7,7 +7,7 @@ class VideoEventsStore:
     def __init__(self, session: Session):
         self.session = session
 
-    def create_video_event(self, video_id, event_type, frame_number, time_seconds, time_string, event_metadata=None):
+    def create_video_event(self, video_id, event_type, frame_number, time_seconds, time_string, event_metadata=None, stroke_type=None):
         """
         Create a new video event
         
@@ -18,7 +18,7 @@ class VideoEventsStore:
             time_seconds (float): The time in seconds from the start of the video
             time_string (str): The time in HH:MM:SS.ms format
             event_metadata (dict, optional): Additional data for the event
-            
+            stroke_type (str, optional): The type of stroke ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10')
         Returns:
             VideoEvents: The created video event
         """
@@ -28,7 +28,8 @@ class VideoEventsStore:
             frame_number=frame_number,
             time_seconds=time_seconds,
             time_string=time_string,
-            event_metadata=event_metadata
+            event_metadata=event_metadata,
+            stroke_type=stroke_type
         )
         
         self.session.add(video_event)

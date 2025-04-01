@@ -8,7 +8,8 @@ from utils.video_utils import center_of_box, get_video_properties
 
 def find_strokes_indices(player_1_boxes, player_2_boxes, ball_positions, skeleton_df):
     """
-    Detect strokes frames using location of the ball and players
+    Detect strokes frames using location of the ball and players, and determine stroke types
+    Returns strokes with their types (0 for forehand, 1 for backhand)
     """
 
     # Slice the x and y positions
@@ -118,4 +119,33 @@ def find_strokes_indices(player_1_boxes, player_2_boxes, ball_positions, skeleto
 
     bounces_indices = [x for x in peaks if x not in strokes_1_indices]
 
-    return strokes_1_indices, strokes_2_indices, bounces_indices
+    strokes_1_with_types = []  # For bottom player
+    strokes_2_with_types = []  # For top player
+
+    # For bottom player strokes
+    for stroke_frame in strokes_1_indices:
+        if player_1_boxes[stroke_frame][0] is not None:
+            player_center = center_of_box(player_1_boxes[stroke_frame][0])
+            ball_pos = np.array([ball_f2_x(stroke_frame), ball_f2_y(stroke_frame)])
+            
+            # For bottom player: right side (ball_x > player_x) = forehand, left side = backhand
+            stroke_type = 0 if ball_pos[0] > player_center[0] else 1
+            strokes_1_with_types.append((stroke_frame, stroke_type))
+
+    # For top player strokes
+    for stroke_frame in strokes_2_indices:
+        player_center = np.array([player_2_f_x(stroke_frame), player_2_f_y(stroke_frame)])
+        ball_pos = np.array([ball_f2_x(stroke_frame), ball_f2_y(stroke_frame)])
+        
+        # For top player: left side (ball_x < player_x) = forehand, right side = backhand
+        stroke_type = 0 if ball_pos[0] < player_center[0] else 1
+        strokes_2_with_types.append((stroke_frame, stroke_type))
+
+    # Separate the frames and types back into separate lists
+    strokes_1_indices = [frame for frame, _ in strokes_1_with_types]
+    strokes_1_types = [stroke_type for _, stroke_type in strokes_1_with_types]
+    
+    strokes_2_indices = [frame for frame, _ in strokes_2_with_types]
+    strokes_2_types = [stroke_type for _, stroke_type in strokes_2_with_types]
+
+    return strokes_1_indices, strokes_2_indices, bounces_indices, strokes_1_types, strokes_2_types
