@@ -49,7 +49,8 @@ def get_video(video_id):
                     'time_string': event.time_string,
                     'metadata': event.event_metadata,
                     'created_at': str(event.created_at) if event.created_at else None,
-                    'updated_at': str(event.updated_at) if event.updated_at else None
+                    'updated_at': str(event.updated_at) if event.updated_at else None,
+                    'stroke_type': event.stroke_type if event.stroke_type else None
                 }
                 for event in video.video_events
             ]
