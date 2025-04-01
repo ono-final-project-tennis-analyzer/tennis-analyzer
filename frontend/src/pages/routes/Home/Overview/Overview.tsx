@@ -1,13 +1,8 @@
 import { Grid } from "@mantine/core";
 import PageHeader from "./components/PageHeader";
-import DropzoneCard from "./components/DropzoneCard";
 import TipsCard from "./components/TipsCard";
-import ServeSpeedChart from "./components/ServeSpeedChart";
-import AccuracyChartCard from "./components/AccuracyChartCard";
 import StrokeTypesChartCard from "./components/StrokeTypesChartCard";
 import MatchOutcomeChartCard from "./components/MatchOutcomeChartCard";
-import { TennisPlaygroundMap } from "@/components/tennis-playground-map/tennis-playground-map.component";
-import PlayGroundTest from "./components/PlayGroundTest";
 import StatComponent from "./components/StatComponentChartCard";
 import { useGetStrokeTypeStats } from "@/services/event.service";
 import {
