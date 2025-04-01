@@ -4,6 +4,7 @@ import { useVideoContext } from "../../../Video/context";
 import styles from "./PlayGround.module.css";
 import { PlayGroundProps } from "./PlayGround.types.ts";
 import { usePlaygroundPoints } from "./hooks/usePlaygroundPoints.ts";
+import TennisPlaygroundLegend from "./components/TennisPlaygroundLegend";
 
 const PlayGround: React.FC<PlayGroundProps> = ({ events = [] }) => {
   const {
@@ -11,7 +12,7 @@ const PlayGround: React.FC<PlayGroundProps> = ({ events = [] }) => {
   } = useVideoContext();
   const points = usePlaygroundPoints(events, currentTime);
 
-  console.log(points);
+  console.log("points", points);
 
   // Calculate a dynamic scale based on the parent element of the map
   const mapContainer = document.getElementById("tennis-playground-map");
@@ -28,6 +29,7 @@ const PlayGround: React.FC<PlayGroundProps> = ({ events = [] }) => {
         ballScale={0.5}
         points={points}
       />
+      <TennisPlaygroundLegend />
     </div>
   );
 };

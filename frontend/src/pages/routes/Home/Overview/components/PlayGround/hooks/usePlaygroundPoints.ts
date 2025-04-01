@@ -28,21 +28,16 @@ const mapEventsToPoints = (events: VideoEvent[]): Point[] => {
   return events
     .map((event) => {
       const position = event.metadata.position;
-      if (!position) {
-        console.warn("Event missing position data:", event);
-        return null;
-      }
-      console.log("Creating point:", {
-        id: event.id,
-        type: event.event_type,
-        x: position.x,
-        y: position.y,
-      });
+      // if (!position) {
+      //   console.warn("Event missing position data:", event);
+      //   return null;
+      // }
       return {
         id: event.id,
         type: getPointType(event.event_type),
-        x: position.x,
-        y: position.y,
+        x: position?.x,
+        y: position?.y,
+        strokeType: event.stroke_type,
       } as Point;
     })
     .filter((point): point is Point => point !== null);

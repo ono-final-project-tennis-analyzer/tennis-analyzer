@@ -9,6 +9,7 @@ export interface TennisPlaygroundMapPoint {
   type: TennisPlaygroundMapPointType;
   x: number;
   y: number;
+  strokeType?: string
 }
 
 export interface TennisPlaygroundMapProps {

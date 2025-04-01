@@ -56,10 +56,10 @@ export default function Video() {
 
       <Grid.Col span={12}>
         <Grid gutter="md">
-          <Grid.Col span={9} style={{ maxHeight: "400px" }}>
+          <Grid.Col span={6} style={{ maxHeight: "400px" }}>
             <VideoPlayer videoId={id as string}/>
           </Grid.Col>
-          <Grid.Col span={3} style={{ maxHeight: "400px" }}>
+          <Grid.Col span={6} style={{ maxHeight: "400px" }}>
             <PlayGround events={videoEvents} />
           </Grid.Col>
         </Grid>

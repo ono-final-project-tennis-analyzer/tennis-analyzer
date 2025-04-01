@@ -12,7 +12,6 @@ const TennisPlaygroundMap: React.FC<TennisPlaygroundMapProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rendererRef = useRef<TennisPlaygroundRenderer | null>(null);
 
-  // Initialize renderer and draw the court once.
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -26,7 +25,6 @@ const TennisPlaygroundMap: React.FC<TennisPlaygroundMapProps> = ({
     rendererRef.current.drawPlayers();
   }, [scale, ballScale, playerScale]);
 
-  // Add new points without redrawing the court or players.
   useEffect(() => {
     if (rendererRef.current) {
       rendererRef.current.addPoints(points);
