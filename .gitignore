@@ -165,3 +165,8 @@ frontend/node_modules/
 
 
 uploads/*
+
+celerybeat-schedule.bak
+celerybeat-schedule.dat
+celerybeat-schedule.db
+celerybeat-schedule.dir
