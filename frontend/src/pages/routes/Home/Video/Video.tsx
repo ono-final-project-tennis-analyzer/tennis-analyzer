@@ -1,8 +1,6 @@
 import { Grid, Loader } from "@mantine/core";
-import PlayGroundTest from "../Overview/components/PlayGroundTest";
+import PlayGround from "../Overview/components/PlayGround";
 import VideoPlayer from "./Components/VideoPlayer/VideoPlayer";
-import ForendBackendChart from "./Components/ForendBackendChart/ForendBackendChart";
-import Score from "./Components/Score/Score";
 import EventsTable from "./Components/EventsTable/EventsTable";
 import VideoTopControls from "./Components/VideoTopControls";
 import { useParams } from "react-router-dom";
@@ -14,7 +12,6 @@ import { useVideoContext } from "./context";
 import { useEffect, useState, useMemo } from "react";
 import { VideoEvent } from "@/@types/VideoEvent";
 import StrokeTypeChooser from "./Components/StrokeTypeChooser";
-import StrokeTypesChartCard from "../../Home/Overview/components/StrokeTypesChartCard/StrokeTypesChartCard";
 import { EStrokeType } from "@/@types/VideoEvent";
 
 export default function Video() {
@@ -59,18 +56,11 @@ export default function Video() {
 
       <Grid.Col span={12}>
         <Grid gutter="md">
-          <Grid.Col span={5} style={{ maxHeight: "500px" }}>
-            <VideoPlayer />
+          <Grid.Col span={9} style={{ maxHeight: "400px" }}>
+            <VideoPlayer videoId={id as string}/>
           </Grid.Col>
-          <Grid.Col span={3} style={{ maxHeight: "500px" }}>
-            <Grid gutter="md">
-              <Grid.Col span={12}>
-                <StrokeTypesChartCard strokeTypes={strokeTypes} />
-              </Grid.Col>
-            </Grid>
-          </Grid.Col>
-          <Grid.Col span={4} style={{ maxHeight: "500px" }}>
-            <PlayGroundTest events={videoEvents} />
+          <Grid.Col span={3} style={{ maxHeight: "400px" }}>
+            <PlayGround events={videoEvents} />
           </Grid.Col>
         </Grid>
       </Grid.Col>

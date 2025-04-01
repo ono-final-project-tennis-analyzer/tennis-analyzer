@@ -4,12 +4,10 @@ import { defaultVideoState } from './Video.state';
 import { videoReducer, VideoActionTypes } from './Video.reducer';
 
 export interface VideoProviderProps extends React.PropsWithChildren {
-  videoURL: string;
   autoPlay?: boolean;
 }
 
 export const VideoProvider: React.FC<VideoProviderProps> = ({
-  videoURL,
   autoPlay = true,
   children,
 }) => {
@@ -45,7 +43,6 @@ export const VideoProvider: React.FC<VideoProviderProps> = ({
   const contextValue: VideoContextType = {
     state,
     dispatch,
-    videoURL,
     autoPlay,
   };
 

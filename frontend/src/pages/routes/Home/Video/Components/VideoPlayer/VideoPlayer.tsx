@@ -3,10 +3,9 @@ import { Card } from "@mantine/core";
 import styles from "./VideoPlayer.module.css";
 import { useVideoContext } from "../../context";
 
-const VideoPlayer: React.FC = () => {
+const VideoPlayer: React.FC<{ videoId: string }> = ({ videoId }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const {
-    videoURL,
     autoPlay,
     setVideoRef,
     playVideo,
@@ -22,7 +21,7 @@ const VideoPlayer: React.FC = () => {
     <Card className={styles.card} shadow="sm">
       <video
         ref={videoRef}
-        src={videoURL}
+        src={`http://localhost:8081/videos/stream/${videoId}`}
         autoPlay={autoPlay}
         className={styles.video}
         muted={muted}

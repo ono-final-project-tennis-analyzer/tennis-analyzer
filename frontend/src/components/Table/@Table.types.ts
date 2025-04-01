@@ -15,6 +15,7 @@ export interface TableProps<T extends BaseCellData> {
   pageSize?: number;
   defaultPage?: number;
   noResultsText?: string;
+  height?: string | number
 }
 
 export interface TableCell<T extends BaseCellData> {

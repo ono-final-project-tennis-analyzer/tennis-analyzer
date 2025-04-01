@@ -1,16 +1,12 @@
-import { Badge, Button, Card, Flex } from "@mantine/core";
+import { Badge, Card } from "@mantine/core";
 import {
-  EStrokeType,
   EVideoEventType,
-  getStrokeTypeText,
   getVideoEventTypeText,
   VideoEvent,
 } from "@/@types/VideoEvent";
+import Styles from "./EventsTable.module.css"
 
 import Table, {
-  // RowActionItem,
-  // RowActions,
-  // TableCell,
   TableColumn,
 } from "@/components/Table";
 
@@ -33,37 +29,19 @@ export default function EventsTable({
     {
       header: "Event Type",
       renderRow: (cell) => (
-        <>
-          {Object.values(EStrokeType).includes(
-            cell.data.event_type as EStrokeType,
-          ) ? (
-            getStrokeTypeText(cell.data.event_type as EStrokeType)
-          ) : Object.values(EVideoEventType).includes(
-              cell.data.event_type as EVideoEventType,
-            ) &&
-            (cell.data.event_type as EVideoEventType) !=
-              EVideoEventType.BallBounce ? (
-            <Flex gap="xs">
-              <Badge color="blue">
-                {getVideoEventTypeText(cell.data.event_type as EVideoEventType)}
-              </Badge>
-              <Button
-                variant="light"
-                color="blue"
-                size="xs"
-                onClick={() => {
-                  onSetStrokeType(cell.data);
-                }}
-              >
-                Set Stroke Type
-              </Button>
-            </Flex>
-          ) : (
-            <Badge color="blue">
-              {getVideoEventTypeText(cell.data.event_type as EVideoEventType)}
-            </Badge>
-          )}
-        </>
+        <Badge color="blue">
+          {getVideoEventTypeText(cell.data.event_type as EVideoEventType)}
+        </Badge>
+      ),
+      accessor: "event_type",
+      minWidth: 30,
+    },
+    {
+      header: "Stroke Type",
+      renderRow: (cell) => (
+        <Badge color="blue">
+          {cell.data.stroke_type ?? 'N / A'}
+        </Badge>
       ),
       accessor: "event_type",
       minWidth: 30,
@@ -83,20 +61,14 @@ export default function EventsTable({
   ];
 
   return (
-    <Card
-      style={{
-        width: "100%",
-        height: "100%",
-        borderRadius: "10px",
-        backgroundColor: "#f0f0f0",
-      }}
-    >
+    <Card className={Styles.card}>
       <Table<VideoEvent>
         data={events}
         columns={columns}
-        pageSize={10}
+        pageSize={5}
         searchable={false}
         noResultsText="No events found."
+        height="calc(100vh - 750px)"
       />
     </Card>
   );

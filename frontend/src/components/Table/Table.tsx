@@ -11,6 +11,7 @@ import TableHead from "./components/TableHead";
 import TableBody from "./components/TableBody";
 import useTablePagination from "./hooks/useTablePagination";
 import TablePagination from "./components/TablePagaintion";
+import clsx from "clsx";
 
 export default function Table<T extends BaseCellData>({
   data,
@@ -27,6 +28,7 @@ export default function Table<T extends BaseCellData>({
   pageSize,
   defaultPage,
   noResultsText,
+  height,
 }: TableProps<T>) {
   const { setSearchValue, searchValue, searchedData, suggestions } =
     useTableSearch<T>({
@@ -62,8 +64,6 @@ export default function Table<T extends BaseCellData>({
     pageSize,
   });
 
-  console.log("searchable", searchable)
-
   return (
     <div className={cx(Styles.container, className)}>
       {searchable ? (
@@ -76,7 +76,10 @@ export default function Table<T extends BaseCellData>({
           resultCount={sortedData.length}
         />
       ) : null}
-      <ScrollArea className={Styles.tableContainer}>
+      <ScrollArea
+        className={clsx(Styles.tableContainer, "table-scroll-area")}
+        style={{ height }}
+      >
         <TableM miw={800} verticalSpacing="sm" className={Styles.table}>
           <TableHead<T>
             data={sortedData}

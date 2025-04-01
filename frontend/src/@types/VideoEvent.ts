@@ -17,6 +17,7 @@ export interface VideoEvent {
         time_string: string,
         updated_at: string,
         video_id: number
+        stroke_type?: string
 }
 
 export interface VideoEventQueryResponse {

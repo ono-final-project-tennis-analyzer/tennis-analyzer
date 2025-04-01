@@ -8,7 +8,7 @@ export const useVideoContext = () => {
     throw new Error("useVideoContext must be used within a VideoProvider");
   }
 
-  const { state, dispatch, videoURL, autoPlay } = context;
+  const { state, dispatch, autoPlay } = context;
 
   const setVideoRef = useCallback(
     (ref: React.RefObject<HTMLVideoElement>) => {
@@ -64,7 +64,6 @@ export const useVideoContext = () => {
 
   return {
     state,
-    videoURL,
     autoPlay,
     setVideoRef,
     playVideo,
